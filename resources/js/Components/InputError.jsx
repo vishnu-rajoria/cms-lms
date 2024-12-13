@@ -1,10 +1,19 @@
-export default function InputError({ message, className = '', ...props }) {
+export default function InputError({
+    message,
+    className = "",
+    isInvalid = false,
+    ...props
+}) {
     return message ? (
-        <p
+        <div
             {...props}
-            className={'text-sm text-red-600 ' + className}
+            className={
+                isInvalid
+                    ? "mt-2 text-sm text-red-600 "
+                    : "mt-2 text-sm text-red-600  hidden " + className
+            }
         >
             {message}
-        </p>
+        </div>
     ) : null;
 }

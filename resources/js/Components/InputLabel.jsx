@@ -1,18 +1,21 @@
 export default function InputLabel({
     value,
-    className = '',
+    className = "",
     children,
+    prefix = "",
+    postfix = "",
+
     ...props
 }) {
     return (
         <label
             {...props}
             className={
-                `block text-sm font-medium text-gray-700 ` +
+                `block text-sm font-medium text-gray-700 dark:text-gray-400 ` +
                 className
             }
         >
-            {value ? value : children}
+            {prefix} {value ? value : children} {postfix}
         </label>
     );
 }

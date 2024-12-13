@@ -36,15 +36,24 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
+        // var_dump($request->all());
+
+        $user_details = [
             'name' => $request->name,
             'email' => $request->email,
+            'role_id' => 3,
             'password' => Hash::make($request->password),
-        ]);
+        ];
+        // print_r($user_details);
+
+        $user = User::create($user_details);
+
 
         event(new Registered($user));
 
         Auth::login($user);
+
+        // print_r($user);
 
         return redirect(route('dashboard', absolute: false));
     }

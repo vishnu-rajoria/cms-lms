@@ -18,10 +18,29 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        //role_id --> admin : 1 | teacher : 2 | student : 3
+        
+
+        $role_id = Auth::user()->role_id;
+        $role = "student";
+        
+        if($role_id == 1)
+        {
+            $role = "admin";
+        }
+        elseif($role_id == 2)
+        {
+            $role = "teacher";
+        }
+       
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'role' => $role,
         ]);
+
+     
     }
 
     /**
@@ -59,5 +78,14 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Upload profile pic for the  account.
+     */
+
+     public function uploadProfilePic(Request $request)
+    {
+        print_r($request->all()['files']);
     }
 }

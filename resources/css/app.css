@@ -1,3 +1,85 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .btn {
+        @apply inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900 mx-2;
+    }
+
+    .btn-primary {
+        @apply bg-indigo-600 text-white hover:bg-indigo-700  focus:outline-none focus:ring-2 focus:ring-indigo-900 focus:ring-offset-2 active:bg-indigo-800;
+    }
+
+    .btn-danger {
+        @apply bg-red-600 text-white hover:bg-red-700  focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2 active:bg-red-800;
+    }
+
+    .btn-success {
+        @apply bg-green-600 text-white hover:bg-green-700  focus:outline-none focus:ring-2 focus:ring-green-900 focus:ring-offset-2 active:bg-green-800;
+    }
+
+    .btn-warning {
+        @apply bg-yellow-600 text-white hover:bg-yellow-700  focus:outline-none focus:ring-2 focus:ring-yellow-900 focus:ring-offset-2 active:bg-yellow-800;
+    }
+
+    .btn-info {
+        @apply bg-blue-600 text-white hover:bg-blue-700  focus:outline-none focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 active:bg-blue-800;
+    }
+
+    .btn-link {
+        @apply text-indigo-600 hover:text-indigo-900  focus:outline-none focus:ring-2 focus:ring-indigo-900 focus:ring-offset-2 active:bg-indigo-800;
+    }
+
+    .btn-sm {
+        @apply text-xs;
+    }
+
+    .btn-lg {
+        @apply text-lg;
+    }
+
+    .btn-block {
+        @apply w-full;
+    }
+
+    .btn-disabled {
+        @apply bg-gray-600 text-white cursor-not-allowed;
+    }
+}
+
+.breath {
+    animation: 8s ease-out breath-animation infinite;
+}
+
+@keyframes breath-animation {
+    0%,
+    100% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1);
+    }
+}
+
+/* width */
+::-webkit-scrollbar {
+    height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    height: 5px;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
