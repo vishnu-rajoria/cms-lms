@@ -1,3 +1,9 @@
+import Badge from "@/Components/Badge";
+import { format } from "date-fns";
+import { toDate } from "date-fns";
+import parseISO from "date-fns/parseISO";
+import { formatDistance } from "date-fns";
+import { formatISO } from "date-fns";
 const baseURL = import.meta.env.VITE_APP_URL;
 
 export const studentsTableColumnsMini = [
@@ -42,23 +48,59 @@ export const studentsTableColumnsMini = [
         selector: (row, index) => {
             switch (row.course) {
                 case 1:
-                    return "FSWD";
+                    return (
+                        <Badge
+                            title="Full Stack Web Development"
+                            className="border border-green-500 dark:text-green-300 dark:bg-emerald-800 "
+                        >
+                            FSWD
+                        </Badge>
+                    );
                     break;
                 case 2:
-                    return "Web Design";
+                    return (
+                        <Badge
+                            className="border border-orange-500 dark:text-yellow-400 dark:bg-orange-800
+                        "
+                        >
+                            Web Design
+                        </Badge>
+                    );
                     break;
                 case 3:
-                    return "Python";
+                    return (
+                        <Badge className="border border-indigo-500 dark:text-indigo-300 dark:bg-indigo-800 ">
+                            Python
+                        </Badge>
+                    );
                     break;
             }
         },
         sortable: true,
-        // width: "150px",
+        width: "130px",
     },
+    // {
+    //     name: "Email",
+    //     selector: (row) => row.email,
+    //     sortable: true,
+    // },
     {
-        name: "Email",
-        selector: (row) => row.email,
+        name: "Joining date",
+        selector: (row, index) => {
+            return (
+                format(
+                    formatISO(parseISO(row.created_at), {
+                        representation: "date",
+                    }),
+                    "dd-L-yyyy"
+                ) +
+                " / " +
+                formatDistance(new Date(), parseISO(row.created_at)) +
+                " ago "
+            );
+        },
         sortable: true,
+        // width: "150px",
     },
 ];
 

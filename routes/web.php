@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\StudentsController;
-use App\Http\Controllers\TeachersController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AccessController;
-use App\Http\Controllers\GroupController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,9 +30,9 @@ Route::prefix("admin")->middleware(['auth', 'verified','verify.access.control'])
         Route::get('/access-control',[AccessController::class,'index'])->name('admin.access_control');
         Route::post('/save-access-control-routes',[AccessController::class,'store'])->name('admin.save_access_control_routes');
 
-        Route::get('/manage-students',[StudentsController::class,"manageStudents"])->name("manage.students");
-
-        Route::get('/register-student',[StudentsController::class,'register'])->name('admin.register.student');
+        Route::get('/manage-students',[StudentController::class,"manageStudents"])->name("manage.students");
+        Route::get('/manage-groups',[GroupController::class,"manageGroups"])->name("manage.groups");
+        Route::get('/register-student',[StudentController::class,'register'])->name('admin.register.student');
 
 
 });
@@ -42,9 +42,11 @@ Route::prefix("admin")->middleware(['auth', 'verified','verify.access.control'])
 
 Route::prefix("api")->middleware(['auth', 'verified','verify.access.control'])->group(function(){
 
-    Route::get('/get-students/{type?}',[StudentsController::class,"getStudents"])->name("api.get.students");
-    Route::post('/save-student',[StudentsController::class,'save'])->name('api.save.student');
-
+    Route::get('/get-students/{type?}',[StudentController::class,"getStudents"])->name("api.get.students");
+    Route::post('/save-student',[StudentController::class,'save'])->name('api.save.student');
+    
+    
+    Route::get('/get-groups/{type?}',[GroupController::class,"getGroups"])->name("api.get.groups");
     Route::post('/save-group',[GroupController::class,'saveStudentGroup'])->name('api.save.group');
 });
 
@@ -56,7 +58,7 @@ Route::prefix("student")->middleware(['auth', 'verified','verify.access.control'
 
 
 Route::prefix("teacher")->middleware(['auth', 'verified','verify.access.control'])->group(function(){
-    Route::get('/dashboard',[TeachersController::class,'index'])->name('teacher.dashboard');
+    Route::get('/dashboard',[TeacherController::class,'index'])->name('teacher.dashboard');
 });
 
 Route::get('/test',function(){

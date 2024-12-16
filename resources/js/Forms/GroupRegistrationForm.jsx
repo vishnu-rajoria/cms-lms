@@ -6,12 +6,14 @@ import IconGroup from "@/Components/IconGroup";
 import { useState } from "react";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { getFormValidationStatus } from "@/Helpers/FormHelper";
+import { toast, Zoom } from "react-toastify";
 const baseURL = import.meta.env.VITE_APP_URL;
 
 export default function GroupRegistrationForm({
     children,
     imagesURL,
     selectedId = null,
+    responseHandler,
 }) {
     const [
         groupRegistrationFormFieldsData,
@@ -56,6 +58,10 @@ export default function GroupRegistrationForm({
 
     function submitHandler(e) {
         e.preventDefault();
+        // Display a loading toast message at the bottom-right
+        const toastId = toast.loading("loading data...", {
+            position: "bottom-right",
+        });
 
         console.log("Form submitted");
 
@@ -88,28 +94,18 @@ export default function GroupRegistrationForm({
                 .then(function (response) {
                     // Log the response from the server
                     console.log("Response from server");
-                    console.log(response.data);
-                    // Optionally, you can display a success message to the user
-                    if (responce.data.status == "success") {
-                        toast.update(toastId, {
-                            render: "User Registered Successfully",
-                            type: "success",
-                            isLoading: false,
-                            autoClose: 5000,
-                            transition: Zoom,
-                            theme: "colored",
-                        });
-                        clearFormHandler();
-                    }
+                    console.log(response);
+                    responseHandler(response);
+                    toast.dismiss();
                 })
                 .catch(function (error) {
                     // Log the error from the server
                     console.log("Error from server");
                     console.log(error.response.data);
 
-                    if (error.response.data.status == "error") {
+                    if (error.response.data.message) {
                         toast.update(toastId, {
-                            render: error.response.data.errors[0],
+                            render: error.response.data.message,
                             type: "error",
                             isLoading: false,
                             closeOnClick: true,
@@ -158,7 +154,7 @@ export default function GroupRegistrationForm({
     }
     return (
         <>
-            <IconGroup className="p-5" max={2} imagesURL={imagesURL} />
+            <IconGroup className="p-5" max={15} imagesURL={imagesURL} />
             <form
                 id={formId}
                 onSubmit={submitHandler}
@@ -171,19 +167,9 @@ export default function GroupRegistrationForm({
                     type="hidden"
                     value={JSON.stringify(selectedId)}
                 />
-                <div className="p-5 grid gap-5 sm:grid-cols-[1fr,1fr] grid-cols-[1fr] xsm:grid-cols-[1fr,1fr]">
-                    <div className="input-fields grid gap-5">
-                        {getFormFieldsJSX(
-                            groupRegistrationFormFieldsData,
-                            {
-                                selectedFieldsKey: Object.keys(
-                                    groupRegistrationFormFieldsData
-                                ),
-                            },
-                            "groupRegistrationFormFieldsData"
-                        )}
-                    </div>
-                    <div className="input-fields ">
+                <div className="p-5 flex flex-wrap">
+                    <div className="px-2 dark:text-gray-400 font-medium text-sm w-[100%] md:w-[50%]">
+                        <div className="pb-1">Group Icon</div>
                         {getFormFieldsJSX(
                             profilePicFormFieldsData,
                             {
@@ -194,7 +180,19 @@ export default function GroupRegistrationForm({
                             "profilePicFormFieldsData"
                         )}
                     </div>
-                    <PrimaryButton className="col-span-2 justify-center">
+                    <div className="px-2 input-fields grid gap-5 w-[100%] md:w-[50%]">
+                        {getFormFieldsJSX(
+                            groupRegistrationFormFieldsData,
+                            {
+                                selectedFieldsKey: Object.keys(
+                                    groupRegistrationFormFieldsData
+                                ),
+                            },
+                            "groupRegistrationFormFieldsData"
+                        )}
+                    </div>
+
+                    <PrimaryButton className="col-span-2 mt-5 justify-center flex-grow">
                         Create Group
                     </PrimaryButton>
                 </div>

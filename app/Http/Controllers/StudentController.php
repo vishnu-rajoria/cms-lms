@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Student;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TestMail;
-class StudentsController extends Controller
+class StudentController extends Controller
 {
 
   
@@ -44,7 +44,7 @@ class StudentsController extends Controller
         elseif($type == 'all'){
                 // Query select() must include the primary key of main tables and foreign key of related tables
                 $studentsRecordsFromDB = User::query()->select('id','name','email')->with(['studentDetails'=>function($query){
-                    $query->select('user_id','fname','course','profile_pic');
+                    $query->select('user_id','fname','course','profile_pic','created_at');
                 }])->where(['role_id' => 3])->orderByDesc('created_at')->get();
                 $studentsRecords = [];
 
@@ -96,8 +96,8 @@ class StudentsController extends Controller
         ];
         try
         {
-        $user = User::create($user_details);
-        $user_id = $user->id;
+            $user = User::create($user_details);
+            $user_id = $user->id;
         }
         catch(\Exception $e)
         {

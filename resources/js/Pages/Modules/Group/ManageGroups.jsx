@@ -7,26 +7,27 @@ import Modal from "@/Components/Modal";
 import GroupRegistrationForm from "@/Forms/GroupRegistrationForm";
 import DataTable, { createTheme } from "react-data-table-component";
 import { CreateDarkTableTheme } from "@/Helpers/ThemeHelper";
-import { studentsTableColumnsMini } from "@/Data/Student";
+import { GroupsTableColumnsMini } from "@/Data/Group";
 import { toast } from "react-toastify";
 import axios from "axios";
 // createTheme creates a new theme named solarized that overrides the build in dark theme
 const baseURL = import.meta.env.VITE_APP_URL;
 CreateDarkTableTheme();
-export default function ManageStudents() {
+export default function ManageGroups() {
     const baseURL = import.meta.env.VITE_APP_URL;
-    const [previouslySavedStudentsData, setPreviouslySavedStudentsData] =
-        useState([]);
+    const [previouslySavedGroupsData, setPreviouslySavedGroupsData] = useState(
+        []
+    );
     const [
-        currentlySelectedStudentGroupOption,
-        setCurrentlySelectedStudentGroupOption,
+        currentlySelectedGroupGroupOption,
+        setCurrentlySelectedGroupGroupOption,
     ] = useState(0);
 
-    const [students, setStudents] = useState([]);
+    const [Groups, setGroups] = useState([]);
     const [pending, setPending] = useState(true);
     const [isRowsSelected, setIsRowsSelected] = useState(false);
     const [selectedRowsImages, setSelectedRowsImages] = useState([]);
-    const [selectedStudentsId, setSelectedStudentsId] = useState([]);
+    const [selectedGroupsId, setSelectedGroupsId] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showTable, setShowTable] = useState(false);
     const [tableTheme, setTableTheme] = useState("solarized");
@@ -44,19 +45,19 @@ export default function ManageStudents() {
     //     }
     //
 
-    function recoverPreviouslySelectedStudentGroupOption() {
-        let previouslySavedStudentsGroupOption = localStorage.getItem(
-            "currentlySelectedStudentGroupOption"
+    function recoverPreviouslySelectedGroupGroupOption() {
+        let previouslySavedGroupsGroupOption = localStorage.getItem(
+            "currentlySelectedGroupGroupOption"
         );
-        if (previouslySavedStudentsGroupOption != null) {
-            setCurrentlySelectedStudentGroupOption(
-                previouslySavedStudentsGroupOption
+        if (previouslySavedGroupsGroupOption != null) {
+            setCurrentlySelectedGroupGroupOption(
+                previouslySavedGroupsGroupOption
             );
         }
     }
 
     /**
-     * Fetches the list of students from the server and updates the state
+     * Fetches the list of Groups from the server and updates the state
      * with the received data
      *
      * This function displays a loading toast message at the bottom-right
@@ -65,7 +66,7 @@ export default function ManageStudents() {
      * data loading. If an error occurs, the toast message is updated to
      * show an error message.
      */
-    function getStudents(type) {
+    function getGroups(type) {
         // Display a loading toast message at the bottom-right
         const toastId = toast.loading("loading data...", {
             position: "bottom-right",
@@ -73,15 +74,15 @@ export default function ManageStudents() {
 
         setShowTable(true);
         axios
-            .get(baseURL + "/api/get-students/" + type)
+            .get(baseURL + "/api/get-groups/" + type)
             .then(function (response) {
                 // Log the response from the server
                 // console.log("Response from server");
-                // console.log(response.data.students);
-                // Update the students state with the data from the server
-                setStudents(response.data.students);
+                // console.log(response.data.Groups);
+                // Update the Groups state with the data from the server
+                setGroups(response.data.groups);
                 // Set pending state to false indicating data fetch completion
-                setPreviouslySavedStudentsData(response.data.students);
+                setPreviouslySavedGroupsData(response.data.Groups);
                 setPending(false);
                 // Update the toast message to indicate successful data loading
                 toast.update(toastId, {
@@ -113,20 +114,20 @@ export default function ManageStudents() {
         setShowModal(true);
     }
 
-    function displayStudentsRecords(selectedOption) {
+    function displayGroupsRecords(selectedOption) {
         if (selectedOption == "all") {
-            console.log("Display all students list");
-            getStudents(selectedOption);
+            console.log("Display all Groups list");
+            getGroups(selectedOption);
         } else {
-            console.log("Display students list for group " + selectedOption);
+            console.log("Display Groups list for group " + selectedOption);
         }
     }
 
     function groupSelectorHandler(selectedValue) {
-        //  displayStudentsRecords(selectedValue);
-        setCurrentlySelectedStudentGroupOption(selectedValue);
+        //  displayGroupsRecords(selectedValue);
+        setCurrentlySelectedGroupGroupOption(selectedValue);
         localStorage.setItem(
-            "currentlySelectedStudentGroupOption",
+            "currentlySelectedGroupGroupOption",
             selectedValue
         );
     }
@@ -138,35 +139,35 @@ export default function ManageStudents() {
         }
     }
     useEffect(() => {
-        recoverPreviouslySelectedStudentGroupOption();
+        recoverPreviouslySelectedGroupGroupOption();
         console.log(
             "displaying record for option : " +
-                currentlySelectedStudentGroupOption
+                currentlySelectedGroupGroupOption
         );
-        displayStudentsRecords(currentlySelectedStudentGroupOption);
-    }, [currentlySelectedStudentGroupOption]);
+        displayGroupsRecords(currentlySelectedGroupGroupOption);
+    }, [currentlySelectedGroupGroupOption]);
 
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                    <h2 className="text-xl">Students </h2>
+                <div className="flex items-center gap-4 flex-wrap">
+                    <h2>Groups </h2>
 
                     <Link
                         className="btn"
-                        href={baseURL + "/admin/register-student"}
+                        href={baseURL + "/admin/register-Group"}
                     >
-                        Register student
+                        Register Group
                     </Link>
                 </div>
             }
         >
-            <Head title="Students" />
+            <Head title="Groups" />
 
             <Modal show={showModal} onClose={() => setShowModal(false)}>
                 <GroupRegistrationForm
                     imagesURL={selectedRowsImages}
-                    selectedId={selectedStudentsId}
+                    selectedId={selectedGroupsId}
                     responseHandler={groupRegistrationResponseHandler}
                 ></GroupRegistrationForm>
             </Modal>
@@ -204,7 +205,7 @@ export default function ManageStudents() {
             <div className="overflow-hidden bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
                 <div className="p-6 text-gray-900">
                     <div className="px-4 mb-4 flex items-center gap-4 nobr me-auto text-slate-400">
-                        <h3>Select a student group</h3>
+                        <h3>Select a Group group</h3>
                         <div>
                             <DropdownInput
                                 name="group-selector"
@@ -218,7 +219,7 @@ export default function ManageStudents() {
                                     },
                                     {
                                         value: "all",
-                                        text: "All Students",
+                                        text: "All Groups",
                                     },
                                     {
                                         value: "1",
@@ -229,7 +230,7 @@ export default function ManageStudents() {
                                         text: "Group 2",
                                     },
                                 ]}
-                                value={currentlySelectedStudentGroupOption}
+                                value={currentlySelectedGroupGroupOption}
                                 onChange={(e) =>
                                     groupSelectorHandler(e.target.value)
                                 }
@@ -242,8 +243,8 @@ export default function ManageStudents() {
                             // expandableRowsComponent={ExpandedComponent}
                             theme={tableTheme}
                             progressPending={pending}
-                            columns={studentsTableColumnsMini}
-                            data={students}
+                            columns={GroupsTableColumnsMini}
+                            data={Groups}
                             selectableRows
                             highlightOnHover
                             fixedheader
@@ -258,7 +259,7 @@ export default function ManageStudents() {
                                     "selectedRows"
                                 ].map((row) => {
                                     if (row.profile_pic) {
-                                        return `${baseURL}/storage/students/${row.id}/profile_pictures/${row.profile_pic}`;
+                                        return `${baseURL}/storage/Groups/${row.id}/profile_pictures/${row.profile_pic}`;
                                     } else {
                                         return `${baseURL}/storage/dummy/profile_pic.jpg`;
                                     }
@@ -268,7 +269,7 @@ export default function ManageStudents() {
                                 ].map((row) => {
                                     return row.id;
                                 });
-                                setSelectedStudentsId(selectedId);
+                                setSelectedGroupsId(selectedId);
                                 setSelectedRowsImages(selectedRowsImages);
                                 console.log("profile pics are : ");
                                 console.log(selectedRowsImages);

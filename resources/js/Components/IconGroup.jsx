@@ -1,4 +1,35 @@
-export default function IconGroup({ imagesURL, className, max = 5, ...props }) {
+export default function IconGroup({
+    imagesURL,
+    className,
+    max = 5,
+    total,
+    size = "md",
+    ...props
+}) {
+    let postfix = 0;
+    if (total) {
+        if (max < total) {
+            postfix = total - max;
+        } else {
+            postfix = total - imagesURL.length;
+        }
+    } else {
+        postfix = imagesURL.length - max;
+    }
+
+    let sizeClasses = "w-[40px] h-[40px]";
+
+    switch (size) {
+        case "sm":
+            sizeClasses = "w-[20px] h-[20px] min-w-[20px] min-h-[20px]";
+            break;
+        case "md":
+            sizeClasses = "w-[30px] h-[30px] min-w-[30px] min-h-[30px]";
+            break;
+        case "lg":
+            sizeClasses = "w-[50px] h-[50px] min-w-[50px] min-h-[50px]";
+            break;
+    }
     return (
         <div className={"flex items-center gap-1 " + className}>
             {imagesURL.map((imageURL, index) => {
@@ -8,25 +39,24 @@ export default function IconGroup({ imagesURL, className, max = 5, ...props }) {
                             key={"image-icon-" + index}
                             className={
                                 index == 0
-                                    ? "w-[40px] h-[40px] border-2 rounded-full overflow-hidden"
-                                    : "w-[40px] h-[40px] border-2 rounded-full overflow-hidden ml-[-10px]"
+                                    ? sizeClasses +
+                                      " border-2 rounded-full overflow-hidden"
+                                    : sizeClasses +
+                                      " border-2 rounded-full overflow-hidden ml-[-10px]"
                             }
                         >
                             <img
-                                className="w-[40px] h-[40px] object-cover "
+                                className={sizeClasses + " object-cover "}
                                 src={imageURL}
                             ></img>
                         </div>
                     );
                 }
             })}
-            {max < imagesURL.length ? (
-                <div className="text-gray-500 dark:text-gray-200">
-                    +{imagesURL.length - max}
-                </div>
-            ) : (
-                ""
-            )}
+
+            <div className="text-gray-500 dark:text-gray-200">
+                {postfix > 0 ? `+${postfix}` : ""}
+            </div>
         </div>
     );
 }

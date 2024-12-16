@@ -66,15 +66,18 @@ const Content = ({
                 enterTo="opacity-100 scale-100"
                 leave="transition ease-in duration-75"
                 leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
+                leaveTo="opacity-0 scale-95 z-40"
             >
                 <div
-                    className={`absolute z-999 mt-2 rounded-md shadow-lg dark:shadow-transparent ${alignmentClasses} ${widthClasses}`}
+                    className={`absolute mt-2 rounded-md shadow-lg dark:shadow-transparent ${alignmentClasses} ${widthClasses}`}
+                    style={{
+                        zIndex: 9999,
+                    }}
                     onClick={() => setOpen(false)}
                 >
                     <div
                         className={
-                            `rounded-md ring-1 ring-black ring-opacity-5 ` +
+                            `rounded-md ring-1 ring-black ring-opacity-5 z-40 ` +
                             contentClasses
                         }
                     >

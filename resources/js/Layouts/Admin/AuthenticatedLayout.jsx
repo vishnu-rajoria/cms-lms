@@ -18,7 +18,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
     return (
         <Theme>
-            <div className="min-h-screen dark:bg-slate-800">
+            <div className="min-h-screen dark:bg-slate-700">
                 <ToastContainer />
                 <nav className="border-b border-gray-100 bg-white dark:invert">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -29,38 +29,11 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
                                     </Link>
                                 </div>
-
-                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 md:flex hidden">
-                                    <NavLink
-                                        href={route("admin.dashboard")}
-                                        active={route().current(
-                                            "admin.dashboard"
-                                        )}
-                                    >
-                                        Dashboard
-                                    </NavLink>
-                                    <NavLink
-                                        href={route("manage.students")}
-                                        active={
-                                            route().current(
-                                                "manage.students"
-                                            ) ||
-                                            route().current(
-                                                "admin.register.student"
-                                            )
-                                                ? true
-                                                : false
-                                        }
-                                    >
-                                        Manage Students
-                                    </NavLink>
-                                </div>
                             </div>
 
                             <div className="ms-6 flex items-center">
                                 <Breather />
                                 <ThemeSwitcher />
-
                                 <div className="relative ms-3 ">
                                     <Dropdown>
                                         <Dropdown.Trigger>
@@ -87,7 +60,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                             </span>
                                         </Dropdown.Trigger>
 
-                                        <Dropdown.Content className="z-99">
+                                        <Dropdown.Content>
                                             <Dropdown.Link
                                                 href={route("profile.edit")}
                                             >
@@ -120,8 +93,8 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
                 </nav>
 
-                <nav className="border-b border-gray-100 bg-white dark:invert justify-center flex lg:hidden overflow-auto z-50">
-                    <div className="max-w-7xl flex flex-norwrap items-center justify-start px-4 py-4 gap-4">
+                <nav className=" border-gray-100 bg-gray-900 justify-start md:justify-center flex overflow-auto z-10 px-6 ">
+                    <div className="p-2 flex flex-norwrap items-center justify-start gap-2 ">
                         <NavLink
                             href={route("admin.dashboard")}
                             active={route().current("admin.dashboard")}
@@ -141,65 +114,27 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Manage Students
                         </NavLink>
+
                         <NavLink
-                            href={route("manage.students")}
+                            href={route("manage.groups")}
                             active={
-                                route().current("manage.students") ||
-                                route().current("admin.register.student")
-                                    ? true
-                                    : false
+                                route().current("manage.groups") ? true : false
                             }
                             className="shrink-0"
                         >
-                            Manage Students
-                        </NavLink>
-                        <NavLink
-                            href={route("manage.students")}
-                            active={
-                                route().current("manage.students") ||
-                                route().current("admin.register.student")
-                                    ? true
-                                    : false
-                            }
-                            className="shrink-0"
-                        >
-                            Manage Students
-                        </NavLink>
-                        <NavLink
-                            href={route("manage.students")}
-                            active={
-                                route().current("manage.students") ||
-                                route().current("admin.register.student")
-                                    ? true
-                                    : false
-                            }
-                            className="shrink-0"
-                        >
-                            Manage Students
-                        </NavLink>
-                        <NavLink
-                            href={route("manage.students")}
-                            active={
-                                route().current("manage.students") ||
-                                route().current("admin.register.student")
-                                    ? true
-                                    : false
-                            }
-                            className="shrink-0"
-                        >
-                            Manage Students
+                            Manage Groups
                         </NavLink>
                     </div>
                 </nav>
                 {header && (
-                    <header className="bg-white shadow dark:bg-gray-900">
-                        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 text-xl font-semibold leading-tight text-gray-800 dark:text-gray-400">
+                    <header className="dark:bg-slate-700 ">
+                        <div className="mx-auto  max-w-7xl  px-8 py-2 text-xl font-semibold leading-tight text-gray-800 dark:text-gray-400">
                             {header}
                         </div>
                     </header>
                 )}
                 <main>
-                    <div className="py-8">
+                    <div className="">
                         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                             {children}
                         </div>
