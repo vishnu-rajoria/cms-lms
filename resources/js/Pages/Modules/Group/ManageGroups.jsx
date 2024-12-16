@@ -8,6 +8,9 @@ import GroupRegistrationForm from "@/Forms/GroupRegistrationForm";
 import DataTable, { createTheme } from "react-data-table-component";
 import { CreateDarkTableTheme } from "@/Helpers/ThemeHelper";
 import { GroupsTableColumnsMini } from "@/Data/Group";
+import IconGroup from "@/Components/IconGroup";
+import { format, formatISO, parseISO, formatDistance } from "date-fns";
+
 import { toast } from "react-toastify";
 import axios from "axios";
 // createTheme creates a new theme named solarized that overrides the build in dark theme
@@ -201,8 +204,81 @@ export default function ManageGroups() {
                     </PrimaryButton>
                 </div>
             )}
+            <div className="group-card-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-2">
+                {Groups.map((group) => {
+                    let picsForIconGroup = [];
+                    group.members_info_limited.forEach((record) => {
+                        picsForIconGroup.push(record.profile_pic);
+                    });
+                    let formattedDate = format(
+                        formatISO(parseISO(group.created_at), {
+                            representation: "date",
+                        }),
+                        "dd-L-yyyy"
+                    );
+                    let created_at = (
+                        <span title={formattedDate}>
+                            {formatDistance(
+                                new Date(),
+                                parseISO(group.created_at)
+                            ) + " ago "}
+                        </span>
+                    );
 
-            <div className="overflow-hidden bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
+                    return (
+                        <div className="group-card gap-2 flex text-gray-200 items-start bg-slate-900 p-6 rounded-lg">
+                            {group.group_icon && (
+                                <img
+                                    className="w-[50px] rounded-full"
+                                    src={
+                                        baseURL +
+                                        `/storage/groups/${group.id}/group_icon/` +
+                                        group.group_icon
+                                    }
+                                />
+                            )}
+                            {!group.group_icon && (
+                                <img
+                                    className="w-[50px] rounded-full"
+                                    src={
+                                        baseURL +
+                                        `/storage/dummy/profile_pic.jpg`
+                                    }
+                                />
+                            )}
+                            <div className="card-content grid gap-2 flex-grow">
+                                <div className="group-header">
+                                    <h3 className="text-xl">{group.name}</h3>
+                                </div>
+
+                                <IconGroup
+                                    className=""
+                                    max={5}
+                                    size="md"
+                                    total={group.members_count}
+                                    imagesURL={picsForIconGroup}
+                                />
+
+                                <div className="text-xs mt-6">{created_at}</div>
+                            </div>
+                            <div className="flex flex-col justify-between h-full">
+                                O
+                                <a
+                                    href="#"
+                                    className="w-[30px] bg-slate-700 p-2 rounded-full"
+                                >
+                                    <img
+                                        className="w-full  invert"
+                                        src="https://www.svgrepo.com/show/449159/next.svg"
+                                        alt=""
+                                    />
+                                </a>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+            {/* <div className="mt-6 overflow-hidden bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
                 <div className="p-6 text-gray-900">
                     <div className="px-4 mb-4 flex items-center gap-4 nobr me-auto text-slate-400">
                         <h3>Select a Group group</h3>
@@ -237,6 +313,7 @@ export default function ManageGroups() {
                             ></DropdownInput>
                         </div>
                     </div>
+
                     {showTable ? (
                         <DataTable
                             // expandableRows
@@ -290,7 +367,7 @@ export default function ManageGroups() {
                         </div>
                     )}
                 </div>
-            </div>
+            </div> */}
         </AuthenticatedLayout>
     );
 }
