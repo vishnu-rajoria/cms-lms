@@ -38,15 +38,16 @@ Route::prefix("admin")->middleware(['auth', 'verified','verify.access.control'])
 });
 
 
-
+Route::get('/group/{group_id}',[GroupController::class,'viewGroupInfo'])->name('view.group.info');
 
 Route::prefix("api")->middleware(['auth', 'verified','verify.access.control'])->group(function(){
 
-    Route::get('/get-students/{type?}',[StudentController::class,"getStudents"])->name("api.get.students");
-    Route::post('/save-student',[StudentController::class,'save'])->name('api.save.student');
+Route::get('/get-students/{group_id?}',[StudentController::class,"getStudents"])->name("api.get.students");
+
+Route::post('/save-student',[StudentController::class,'save'])->name('api.save.student');
     
     
-    Route::get('/get-groups/{type?}',[GroupController::class,"getGroups"])->name("api.get.groups");
+Route::get('/get-groups/{type?}',[GroupController::class,"getGroups"])->name("api.get.groups");
     Route::post('/save-group',[GroupController::class,'saveStudentGroup'])->name('api.save.group');
 });
 

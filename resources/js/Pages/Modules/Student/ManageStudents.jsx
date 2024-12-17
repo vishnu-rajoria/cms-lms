@@ -73,7 +73,7 @@ export default function ManageStudents() {
 
         setShowTable(true);
         axios
-            .get(baseURL + "/api/get-students/" + type)
+            .get(baseURL + "/api/get-students/")
             .then(function (response) {
                 // Log the response from the server
                 // console.log("Response from server");
@@ -172,7 +172,7 @@ export default function ManageStudents() {
             </Modal>
 
             {isRowsSelected && (
-                <div className="flex justify-center sticky top-0 dark:bg-slate-800 z-10 flex-wrap gap-2">
+                <div className="flex justify-center sticky top-0 dark:bg-slate-700 z-[1] flex-wrap gap-2 py-1">
                     <PrimaryButton
                         className="shrink-0"
                         onClick={createNewbatch}

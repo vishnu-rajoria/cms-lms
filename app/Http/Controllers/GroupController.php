@@ -141,6 +141,11 @@ class GroupController extends Controller
         
     }
 
-
+    function viewGroupInfo($group_id)
+    {
+        return Inertia::render('Modules/Group/ViewGroupInfo',[
+            'groupId' => $group_id
+        ]);
+    }
 
 }

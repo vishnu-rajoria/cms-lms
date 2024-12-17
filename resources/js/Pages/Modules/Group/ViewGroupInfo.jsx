@@ -7,30 +7,26 @@ import Modal from "@/Components/Modal";
 import GroupRegistrationForm from "@/Forms/GroupRegistrationForm";
 import DataTable, { createTheme } from "react-data-table-component";
 import { CreateDarkTableTheme } from "@/Helpers/ThemeHelper";
-import { GroupsTableColumnsMini } from "@/Data/Group";
-import IconGroup from "@/Components/IconGroup";
-import { format, formatISO, parseISO, formatDistance } from "date-fns";
-
+import { studentsTableColumnsMini } from "@/Data/Student";
 import { toast } from "react-toastify";
 import axios from "axios";
 // createTheme creates a new theme named solarized that overrides the build in dark theme
 const baseURL = import.meta.env.VITE_APP_URL;
 CreateDarkTableTheme();
-export default function ManageGroups() {
+export default function ViewGroupInfo({ groupId, ...props }) {
     const baseURL = import.meta.env.VITE_APP_URL;
-    const [previouslySavedGroupsData, setPreviouslySavedGroupsData] = useState(
-        []
-    );
+    const [previouslySavedStudentsData, setPreviouslySavedStudentsData] =
+        useState([]);
     const [
-        currentlySelectedGroupGroupOption,
-        setCurrentlySelectedGroupGroupOption,
+        currentlySelectedStudentGroupOption,
+        setCurrentlySelectedStudentGroupOption,
     ] = useState(0);
 
-    const [Groups, setGroups] = useState([]);
+    const [students, setStudents] = useState([]);
     const [pending, setPending] = useState(true);
     const [isRowsSelected, setIsRowsSelected] = useState(false);
     const [selectedRowsImages, setSelectedRowsImages] = useState([]);
-    const [selectedGroupsId, setSelectedGroupsId] = useState([]);
+    const [selectedStudentsId, setSelectedStudentsId] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showTable, setShowTable] = useState(false);
     const [tableTheme, setTableTheme] = useState("solarized");
@@ -48,19 +44,19 @@ export default function ManageGroups() {
     //     }
     //
 
-    function recoverPreviouslySelectedGroupGroupOption() {
-        let previouslySavedGroupsGroupOption = localStorage.getItem(
-            "currentlySelectedGroupGroupOption"
+    function recoverPreviouslySelectedStudentGroupOption() {
+        let previouslySavedStudentsGroupOption = localStorage.getItem(
+            "currentlySelectedStudentGroupOption"
         );
-        if (previouslySavedGroupsGroupOption != null) {
-            setCurrentlySelectedGroupGroupOption(
-                previouslySavedGroupsGroupOption
+        if (previouslySavedStudentsGroupOption != null) {
+            setCurrentlySelectedStudentGroupOption(
+                previouslySavedStudentsGroupOption
             );
         }
     }
 
     /**
-     * Fetches the list of Groups from the server and updates the state
+     * Fetches the list of students from the server and updates the state
      * with the received data
      *
      * This function displays a loading toast message at the bottom-right
@@ -69,7 +65,7 @@ export default function ManageGroups() {
      * data loading. If an error occurs, the toast message is updated to
      * show an error message.
      */
-    function getGroups(type) {
+    function getStudents(type) {
         // Display a loading toast message at the bottom-right
         const toastId = toast.loading("loading data...", {
             position: "bottom-right",
@@ -77,15 +73,15 @@ export default function ManageGroups() {
 
         setShowTable(true);
         axios
-            .get(baseURL + "/api/get-groups/" + type)
+            .get(baseURL + "/api/get-students/" + groupId)
             .then(function (response) {
                 // Log the response from the server
                 // console.log("Response from server");
-                // console.log(response.data.Groups);
-                // Update the Groups state with the data from the server
-                setGroups(response.data.groups);
+                // console.log(response.data.students);
+                // Update the students state with the data from the server
+                setStudents(response.data.students);
                 // Set pending state to false indicating data fetch completion
-                setPreviouslySavedGroupsData(response.data.Groups);
+                setPreviouslySavedStudentsData(response.data.students);
                 setPending(false);
                 // Update the toast message to indicate successful data loading
                 toast.update(toastId, {
@@ -117,20 +113,20 @@ export default function ManageGroups() {
         setShowModal(true);
     }
 
-    function displayGroupsRecords(selectedOption) {
+    function displayStudentsRecords(selectedOption) {
         if (selectedOption == "all") {
-            console.log("Display all Groups list");
-            getGroups(selectedOption);
+            console.log("Display all students list");
+            getStudents(selectedOption);
         } else {
-            console.log("Display Groups list for group " + selectedOption);
+            console.log("Display students list for group " + selectedOption);
         }
     }
 
     function groupSelectorHandler(selectedValue) {
-        //  displayGroupsRecords(selectedValue);
-        setCurrentlySelectedGroupGroupOption(selectedValue);
+        //  displayStudentsRecords(selectedValue);
+        setCurrentlySelectedStudentGroupOption(selectedValue);
         localStorage.setItem(
-            "currentlySelectedGroupGroupOption",
+            "currentlySelectedStudentGroupOption",
             selectedValue
         );
     }
@@ -142,41 +138,40 @@ export default function ManageGroups() {
         }
     }
     useEffect(() => {
-        recoverPreviouslySelectedGroupGroupOption();
+        recoverPreviouslySelectedStudentGroupOption();
         console.log(
             "displaying record for option : " +
-                currentlySelectedGroupGroupOption
+                currentlySelectedStudentGroupOption
         );
-        displayGroupsRecords(currentlySelectedGroupGroupOption);
-    }, [currentlySelectedGroupGroupOption]);
+        displayStudentsRecords(currentlySelectedStudentGroupOption);
+    }, [currentlySelectedStudentGroupOption]);
 
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex items-center gap-4 flex-wrap">
-                    <h2>Groups </h2>
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <h2 className="text-xl">Students </h2>
 
                     <Link
                         className="btn"
-                        href={baseURL + "/admin/register-Group"}
+                        href={baseURL + "/admin/register-student"}
                     >
-                        Register Group
+                        Register student
                     </Link>
                 </div>
             }
         >
-            <Head title="Groups" />
+            <Head title="Students" />
 
             <Modal show={showModal} onClose={() => setShowModal(false)}>
                 <GroupRegistrationForm
                     imagesURL={selectedRowsImages}
-                    selectedId={selectedGroupsId}
+                    selectedId={selectedStudentsId}
                     responseHandler={groupRegistrationResponseHandler}
                 ></GroupRegistrationForm>
             </Modal>
-
             {isRowsSelected && (
-                <div className="flex justify-center sticky top-0 dark:bg-slate-800 z-10 flex-wrap gap-2">
+                <div className="flex justify-center sticky top-0 dark:bg-slate-700 z-[1] flex-wrap gap-2 py-1">
                     <PrimaryButton
                         className="shrink-0"
                         onClick={createNewbatch}
@@ -204,90 +199,10 @@ export default function ManageGroups() {
                     </PrimaryButton>
                 </div>
             )}
-            <div className="group-card-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-2">
-                {Groups.map((group) => {
-                    let picsForIconGroup = [];
-                    group.members_info_limited.forEach((record) => {
-                        picsForIconGroup.push(record.profile_pic);
-                    });
-                    let formattedDate = format(
-                        formatISO(parseISO(group.created_at), {
-                            representation: "date",
-                        }),
-                        "dd-L-yyyy"
-                    );
-                    let created_at = (
-                        <span title={formattedDate}>
-                            {formatDistance(
-                                new Date(),
-                                parseISO(group.created_at)
-                            ) + " ago "}
-                        </span>
-                    );
-
-                    return (
-                        <div className="group-card gap-2 flex text-gray-200 items-start bg-slate-900 p-6 rounded-lg">
-                            {group.group_icon && (
-                                <img
-                                    className="w-[50px] rounded-full"
-                                    src={
-                                        baseURL +
-                                        `/storage/groups/${group.id}/group_icon/` +
-                                        group.group_icon
-                                    }
-                                />
-                            )}
-                            {!group.group_icon && (
-                                <img
-                                    className="w-[50px] rounded-full"
-                                    src={
-                                        baseURL +
-                                        `/storage/dummy/profile_pic.jpg`
-                                    }
-                                />
-                            )}
-                            <div className="card-content grid gap-2 flex-grow">
-                                <div className="group-header">
-                                    <h3 className="text-xl capitalize">
-                                        {group.name}
-                                    </h3>
-                                </div>
-
-                                <IconGroup
-                                    className=""
-                                    max={5}
-                                    size="md"
-                                    total={group.members_count}
-                                    imagesURL={picsForIconGroup}
-                                />
-
-                                <div className="text-xs mt-6 text-slate-600">
-                                    {created_at}
-                                </div>
-                            </div>
-                            <div className="flex flex-col justify-between h-full">
-                                O
-                                <Link
-                                    href={route("view.group.info", {
-                                        group_id: group.id,
-                                    })}
-                                    className="w-[30px] bg-slate-700 p-2 rounded-full hover:bg-green-600 transition-all ease-in-out duration-300"
-                                >
-                                    <img
-                                        className="w-full  invert"
-                                        src="https://www.svgrepo.com/show/449159/next.svg"
-                                        alt=""
-                                    />
-                                </Link>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-            {/* <div className="mt-6 overflow-hidden bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
+            <div className="overflow-hidden bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
                 <div className="p-6 text-gray-900">
                     <div className="px-4 mb-4 flex items-center gap-4 nobr me-auto text-slate-400">
-                        <h3>Select a Group group</h3>
+                        <h3>Select a student group</h3>
                         <div>
                             <DropdownInput
                                 name="group-selector"
@@ -301,7 +216,7 @@ export default function ManageGroups() {
                                     },
                                     {
                                         value: "all",
-                                        text: "All Groups",
+                                        text: "All Students",
                                     },
                                     {
                                         value: "1",
@@ -312,22 +227,21 @@ export default function ManageGroups() {
                                         text: "Group 2",
                                     },
                                 ]}
-                                value={currentlySelectedGroupGroupOption}
+                                value={currentlySelectedStudentGroupOption}
                                 onChange={(e) =>
                                     groupSelectorHandler(e.target.value)
                                 }
                             ></DropdownInput>
                         </div>
                     </div>
-
                     {showTable ? (
                         <DataTable
                             // expandableRows
                             // expandableRowsComponent={ExpandedComponent}
                             theme={tableTheme}
                             progressPending={pending}
-                            columns={GroupsTableColumnsMini}
-                            data={Groups}
+                            columns={studentsTableColumnsMini}
+                            data={students}
                             selectableRows
                             highlightOnHover
                             fixedheader
@@ -342,7 +256,7 @@ export default function ManageGroups() {
                                     "selectedRows"
                                 ].map((row) => {
                                     if (row.profile_pic) {
-                                        return `${baseURL}/storage/Groups/${row.id}/profile_pictures/${row.profile_pic}`;
+                                        return `${baseURL}/storage/students/${row.id}/profile_pictures/${row.profile_pic}`;
                                     } else {
                                         return `${baseURL}/storage/dummy/profile_pic.jpg`;
                                     }
@@ -352,7 +266,7 @@ export default function ManageGroups() {
                                 ].map((row) => {
                                     return row.id;
                                 });
-                                setSelectedGroupsId(selectedId);
+                                setSelectedStudentsId(selectedId);
                                 setSelectedRowsImages(selectedRowsImages);
                                 console.log("profile pics are : ");
                                 console.log(selectedRowsImages);
@@ -373,7 +287,7 @@ export default function ManageGroups() {
                         </div>
                     )}
                 </div>
-            </div> */}
+            </div>
         </AuthenticatedLayout>
     );
 }

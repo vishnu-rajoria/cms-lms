@@ -20,9 +20,9 @@ export default function AuthenticatedLayout({ header, children }) {
         <Theme>
             <div className="min-h-screen dark:bg-slate-700">
                 <ToastContainer />
-                <nav className="border-b border-gray-100 bg-white dark:invert">
+                <nav className="border-b border-gray-100 bg-white dark:invert z-[100]">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <div className="flex h-16 justify-between">
+                        <div className="flex h-16 justify-between  ">
                             <div className="flex">
                                 <div className="flex shrink-0 items-center">
                                     <Link href="/">
@@ -34,7 +34,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             <div className="ms-6 flex items-center">
                                 <Breather />
                                 <ThemeSwitcher />
-                                <div className="relative ms-3 ">
+                                <div className="relative ms-3 z-[100] ">
                                     <Dropdown>
                                         <Dropdown.Trigger>
                                             <span className="inline-flex rounded-md">
