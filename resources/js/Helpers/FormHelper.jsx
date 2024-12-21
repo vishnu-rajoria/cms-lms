@@ -5,6 +5,7 @@ import DropdownInput from "@/Components/DropdownInput";
 import FileUploadInput from "@/Components/FileUploadInput";
 import { validateFormFields } from "@/Helpers/ValidationHelper";
 import TextareaInput from "@/Components/TextareaInput";
+import ToggleBtn from "@/Components/ToggleBtn";
 export function getFormFieldsJSX(
     formFields,
     settings = {},
@@ -28,6 +29,54 @@ export function getFormFieldsJSX(
         if (selectedFieldsKey.indexOf(key) > -1) {
             // console.log(`Current field case is : ${formField.type}`);
             switch (formField.type) {
+                case "toggle":
+                    return (
+                        <div key={"input-field-container-" + key}>
+                            <ToggleBtn
+                                options={formField.options}
+                                name={key}
+                                value={formField.value}
+                                id={key}
+                                key={key}
+                                className="mt-1 block w-full"
+                                onChange={(event) => {
+                                    formField.fieldEvents.onChange.map(
+                                        (functionToFire) => {
+                                            functionToFire(
+                                                key,
+                                                event.target.value,
+                                                dataFieldsGroupVariable
+                                            );
+                                        }
+                                    );
+                                }}
+                                onClick={(event, value) => {
+                                    formField.fieldEvents.onClick.map(
+                                        (functionToFire) => {
+                                            functionToFire(
+                                                key,
+                                                event,
+                                                dataFieldsGroupVariable
+                                            );
+                                        }
+                                    );
+                                }}
+                            />
+                            <InputLabel
+                                htmlFor={key}
+                                defaultValue={formField.label}
+                            />
+                            <InputError
+                                isInvalid={
+                                    formField.fieldValidationStatus.isInvalid
+                                }
+                                message={
+                                    formField.fieldValidationStatus.message
+                                }
+                            />
+                        </div>
+                    );
+                    break;
                 case "text":
                 case "password":
                 case "date":
@@ -149,23 +198,7 @@ export function getFormFieldsJSX(
                                 type={formField.type}
                                 id={key}
                                 key={key}
-                                options={[
-                                    {
-                                        key: key + ".1",
-                                        value: "1",
-                                        text: "Male",
-                                    },
-                                    {
-                                        key: key + ".2",
-                                        value: "2",
-                                        text: "Female",
-                                    },
-                                    {
-                                        key: key + ".3",
-                                        value: "3",
-                                        text: "Do not disclose",
-                                    },
-                                ]}
+                                options={formField.options}
                                 value={formField.value}
                                 onChange={(e) => {
                                     formField.fieldEvents.onChange.map(
@@ -215,8 +248,8 @@ export function getFormValidationStatus(allFormFieldsGroup) {
     Object.keys(allFormFieldsGroup).forEach((key) => {
         let formFieldsGroup = allFormFieldsGroup[key].data;
         let groupValidationOutput = validateFormFields(formFieldsGroup);
-        console.log(key + " : form fields validation status is ");
-        console.log(groupValidationOutput);
+        // console.log(key + " : form fields validation status is ");
+        // console.log(groupValidationOutput);
 
         updatedValidationStatus(
             allFormFieldsGroup[key].setterMethod,
@@ -224,9 +257,9 @@ export function getFormValidationStatus(allFormFieldsGroup) {
             groupValidationOutput.formFieldsValidationStatus
         );
 
-        console.log(
-            `For form ${key} isFormValid is ${groupValidationOutput.isFormValid}`
-        );
+        // console.log(
+        //     `For form ${key} isFormValid is ${groupValidationOutput.isFormValid}`
+        // );
         if (!groupValidationOutput.isFormValid) {
             // console.log("form is invalid");
             formValidationStatus.isInvalid = true;
@@ -265,8 +298,8 @@ export function updatedValidationStatus(
 
 export function clearFormHandler(e = null, allFormFieldsGroup) {
     e.preventDefault();
-    console.log("Clearing the form now");
-    console.log(allFormFieldsGroup);
+    // console.log("Clearing the form now");
+    // console.log(allFormFieldsGroup);
 
     Object.keys(allFormFieldsGroup).forEach((key) => {
         let originalData = allFormFieldsGroup[key].originalData;
@@ -274,4 +307,21 @@ export function clearFormHandler(e = null, allFormFieldsGroup) {
         setterMethod(originalData);
     });
     return;
+}
+
+export function getBlankInputFields(formFieldData) {
+    return Object.keys(formFieldData).map((key, index) => {
+        let field = formFieldData[key];
+        // console.log("field is : ");
+        // console.log(field);
+        return (
+            <input
+                key={key + "_" + index}
+                hidden
+                name={key}
+                type="text"
+                defaultValue="0"
+            />
+        );
+    });
 }

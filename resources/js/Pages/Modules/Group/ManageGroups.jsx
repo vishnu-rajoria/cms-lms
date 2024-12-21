@@ -10,7 +10,7 @@ import { CreateDarkTableTheme } from "@/Helpers/ThemeHelper";
 import { GroupsTableColumnsMini } from "@/Data/Group";
 import IconGroup from "@/Components/IconGroup";
 import { format, formatISO, parseISO, formatDistance } from "date-fns";
-
+import { getGroupIconURL, getStudentImageURL } from "@/Helpers/ImageHelper";
 import { toast } from "react-toastify";
 import axios from "axios";
 // createTheme creates a new theme named solarized that overrides the build in dark theme
@@ -208,7 +208,9 @@ export default function ManageGroups() {
                 {Groups.map((group) => {
                     let picsForIconGroup = [];
                     group.members_info_limited.forEach((record) => {
-                        picsForIconGroup.push(record.profile_pic);
+                        picsForIconGroup.push(
+                            getStudentImageURL(record.id, record.profile_pic)
+                        );
                     });
                     let formattedDate = format(
                         formatISO(parseISO(group.created_at), {
@@ -227,25 +229,14 @@ export default function ManageGroups() {
 
                     return (
                         <div className="group-card gap-2 flex text-gray-200 items-start bg-slate-900 p-6 rounded-lg">
-                            {group.group_icon && (
-                                <img
-                                    className="w-[50px] rounded-full"
-                                    src={
-                                        baseURL +
-                                        `/storage/groups/${group.id}/group_icon/` +
-                                        group.group_icon
-                                    }
-                                />
-                            )}
-                            {!group.group_icon && (
-                                <img
-                                    className="w-[50px] rounded-full"
-                                    src={
-                                        baseURL +
-                                        `/storage/dummy/profile_pic.jpg`
-                                    }
-                                />
-                            )}
+                            <img
+                                className="w-[50px] rounded-full"
+                                src={getGroupIconURL(
+                                    group.id,
+                                    group.group_icon
+                                )}
+                            />
+
                             <div className="card-content grid gap-2 flex-grow">
                                 <div className="group-header">
                                     <h3 className="text-xl capitalize">

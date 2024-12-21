@@ -119,15 +119,15 @@ class GroupController extends Controller
                    $memberDetails = []; 
                    $base_url = env('APP_URL');
                    $member_id = $membersRecord['user_id'];
-                   $profile_pic_name = $membersRecord['profile_pic'];
+                   $memberDetails['profile_pic'] = $membersRecord['profile_pic'];
                    $memberDetails['id'] = $member_id;
-                   if($profile_pic_name!= null)
-                   {
-                    $memberDetails['profile_pic'] = "$base_url/public/storage/students/$member_id/profile_pictures/$profile_pic_name";
-                   }
-                   else{
-                    $memberDetails['profile_pic'] = "$base_url/public/storage/dummy/profile_pic.jpg";
-                   }
+                //    if($profile_pic_name!= null)
+                //    {
+                //     $memberDetails['profile_pic'] = "$base_url/public/storage/students/$member_id/profile_pictures/$profile_pic_name";
+                //    }
+                //    else{
+                //     $memberDetails['profile_pic'] = "$base_url/public/storage/dummy/profile_pic.jpg";
+                //    }
                    $members[] = $memberDetails;
                  }
 

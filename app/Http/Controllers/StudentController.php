@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Foundation\Application;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Student;
-use App\Models\StudentsOfGroup;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TestMail;
+use Auth;
+
+// Models
+use App\Models\User;
+use App\Models\Student;
+use App\Models\StudentsOfGroup;
+use App\Models\StudentAttendance;
 class StudentController extends Controller
 {
 
@@ -192,4 +196,46 @@ class StudentController extends Controller
         
 
     }
+
+
+
+    function saveStudentsAttendance(Request $request)
+    {
+        $data = $request->all();
+        try{
+        foreach($data['student_id'] as $key => $value)
+        {
+            $studentAttendanceRecord = array();
+            $studentAttendanceRecord['date'] = $data['date'];
+            $studentAttendanceRecord['user_id'] = $data['student_id'][$key];
+            $studentAttendanceRecord['group_id'] = $data['group_id'][$key];
+            $studentAttendanceRecord['is_present'] = $data['is_present'][$key];
+            $studentAttendanceRecord['late_entry_by_minutes'] = $data['late_entry_by_minutes'][$key];
+            $studentAttendanceRecord['early_leave_by_minutes'] = $data['early_leave_by_minutes'][$key];
+            $studentAttendanceRecord['is_leave_uninformed'] = !$data['is_leave_uninformed'][$key];
+            $studentAttendanceRecord['remark'] = $data['remark'][$key];
+            $studentAttendanceRecord['created_by_id'] = Auth::user()->id;
+            
+           
+                StudentAttendance::create($studentAttendanceRecord);
+           
+            
+        }
+        }
+        catch(\Exception $e)
+        {
+            return response()->json(["status" => "error", "errors" => $e->getMessage()],422);
+        }
+        return response()->json(["status" => "success"],200);
+    }
+
+
+    function getGroupStudentsAttendance(Request $request)
+    {
+        $groupId = $request->get('groupId');
+        $date = $request->get('date');
+        $studentsAttendance = StudentAttendance::where('group_id',$groupId)->where('date',$date)->get();
+        return response()->json(["studentsAttendance" => $studentsAttendance],200);
+    }
+
 }

@@ -18,7 +18,7 @@ import {
     signaturePicFormFields,
 } from "@/Data/Comman";
 import axios from "axios";
-import { toast, Zoom} from "react-toastify";
+import { toast, Zoom } from "react-toastify";
 import {
     getFormDataWithFormId,
     getFormValidationStatus,
@@ -79,20 +79,19 @@ export default function StudentRegistrationByAdmin() {
             originalData: JSON.parse(JSON.stringify(signaturePicFormFields)),
         },
     };
-attachEventListenersToAllFormFieldsGroup();
-function attachEventListenersToAllFormFieldsGroup()
-{
-    Object.keys(allFormFieldsGroup).forEach((key) => {
-        let formFieldsGroup = allFormFieldsGroup[key];
-        Object.keys(formFieldsGroup.data).map(
-            (field) =>
-                (formFieldsGroup.data[field].fieldEvents = {
-                    onChange: [setData],
-                    onClick: [() => console.log("clicked")],
-                })
-        );
-    });
-}
+    attachEventListenersToAllFormFieldsGroup();
+    function attachEventListenersToAllFormFieldsGroup() {
+        Object.keys(allFormFieldsGroup).forEach((key) => {
+            let formFieldsGroup = allFormFieldsGroup[key];
+            Object.keys(formFieldsGroup.data).map(
+                (field) =>
+                    (formFieldsGroup.data[field].fieldEvents = {
+                        onChange: [setData],
+                        onClick: [() => console.log("clicked")],
+                    })
+            );
+        });
+    }
 
     // The formId is the id of the form, which is used to identify the form and get the filled form data in the page.
     const formId = "student-registation-form";
@@ -187,8 +186,7 @@ function attachEventListenersToAllFormFieldsGroup()
                 dataFieldsGroupVariable
         );
         //// Update the value of the field in the formData object
-        let newDataFieldsGroup = {...eval(dataFieldsGroupVariable)};
-       
+        let newDataFieldsGroup = { ...eval(dataFieldsGroupVariable) };
 
         console.log("newDataFieldsGroup is : ");
         console.log(newDataFieldsGroup);
@@ -216,7 +214,7 @@ function attachEventListenersToAllFormFieldsGroup()
     // useEffect(() => {
     //     console.log("all form fields inside he useeffect");
     //     console.log(allFormFieldsGroup);
-        
+
     // }, []);
 
     return (
@@ -229,7 +227,7 @@ function attachEventListenersToAllFormFieldsGroup()
         >
             <Head title="student-registration" />
 
-            <div className="overflow-hidden shadow-sm sm:rounded-lg box-border">
+            <div className="overflow-hidden shadow-sm sm:rounded-lg box-border bg-slate-800">
                 <div className="p-6 text-gray-900 dark:text-gray-400">
                     <StudentRegistrationForm
                         formId={formId}

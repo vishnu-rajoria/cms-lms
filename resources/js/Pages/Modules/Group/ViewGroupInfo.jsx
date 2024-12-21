@@ -5,11 +5,18 @@ import DropdownInput from "@/Components/DropdownInput";
 import PrimaryButton from "@/Components/PrimaryButton";
 import Modal from "@/Components/Modal";
 import GroupRegistrationForm from "@/Forms/GroupRegistrationForm";
+import MarkStudentAttendanceForm from "@/Forms/MarkGroupedStudentsAttendanceForm";
 import DataTable, { createTheme } from "react-data-table-component";
 import { CreateDarkTableTheme } from "@/Helpers/ThemeHelper";
 import { studentsTableColumnsMini } from "@/Data/Student";
+import { getStudentImageURL } from "@/Helpers/ImageHelper";
 import { toast } from "react-toastify";
 import axios from "axios";
+import DatePicker from "react-date-picker";
+import "react-date-picker/dist/DatePicker.css";
+import "react-calendar/dist/Calendar.css";
+
+import { set } from "date-fns";
 // createTheme creates a new theme named solarized that overrides the build in dark theme
 const baseURL = import.meta.env.VITE_APP_URL;
 CreateDarkTableTheme();
@@ -28,6 +35,9 @@ export default function ViewGroupInfo({ groupId, ...props }) {
     const [selectedRowsImages, setSelectedRowsImages] = useState([]);
     const [selectedStudentsId, setSelectedStudentsId] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [showAttendaceForm, setShowAttendaceForm] = useState(false);
+    const [groupRegistrationForm, setGroupRegistrationForm] = useState(false);
+
     const [showTable, setShowTable] = useState(false);
     const [tableTheme, setTableTheme] = useState("solarized");
 
@@ -111,6 +121,8 @@ export default function ViewGroupInfo({ groupId, ...props }) {
     function createNewbatch() {
         // alert("Create new batch");
         setShowModal(true);
+        setShowAttendaceForm(false);
+        setGroupRegistrationForm(true);
     }
 
     function displayStudentsRecords(selectedOption) {
@@ -137,6 +149,14 @@ export default function ViewGroupInfo({ groupId, ...props }) {
             setShowModal(false);
         }
     }
+
+    function studentAttendanceResponseHandler(response) {
+        console.log(" inside groupRegistrationRespnseHandler response is : ");
+        if (response.data.status == "success") {
+            setShowModal(false);
+        }
+    }
+
     useEffect(() => {
         recoverPreviouslySelectedStudentGroupOption();
         console.log(
@@ -152,23 +172,53 @@ export default function ViewGroupInfo({ groupId, ...props }) {
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                     <h2 className="text-xl">Students </h2>
 
-                    <Link
-                        className="btn"
-                        href={baseURL + "/admin/register-student"}
-                    >
-                        Register student
-                    </Link>
+                    {!pending && (
+                        <>
+                            <DatePicker
+                                onChange={(value) => {
+                                    console.log("date changed");
+                                    console.log(value);
+                                }}
+                                value={new Date()}
+                            />
+                            <PrimaryButton
+                                onClick={() => {
+                                    setShowModal(true);
+                                    setShowAttendaceForm(true);
+                                }}
+                                className="shrink-0"
+                            >
+                                Mark Attendance
+                            </PrimaryButton>
+                        </>
+                    )}
                 </div>
             }
         >
             <Head title="Students" />
 
-            <Modal show={showModal} onClose={() => setShowModal(false)}>
-                <GroupRegistrationForm
-                    imagesURL={selectedRowsImages}
-                    selectedId={selectedStudentsId}
-                    responseHandler={groupRegistrationResponseHandler}
-                ></GroupRegistrationForm>
+            <Modal
+                show={showModal}
+                onClose={() => {
+                    setShowModal(false);
+                    setShowAttendaceForm(false);
+                    setGroupRegistrationForm(false);
+                }}
+            >
+                {showAttendaceForm && (
+                    <MarkStudentAttendanceForm
+                        groupId={groupId}
+                        students={students}
+                        responseHandler={studentAttendanceResponseHandler}
+                    />
+                )}
+                {groupRegistrationForm && (
+                    <GroupRegistrationForm
+                        imagesURL={selectedRowsImages}
+                        selectedId={selectedStudentsId}
+                        responseHandler={groupRegistrationResponseHandler}
+                    />
+                )}
             </Modal>
             {isRowsSelected && (
                 <div className="flex justify-center sticky top-0 dark:bg-slate-700 z-[1] flex-wrap gap-2 py-1">
@@ -184,13 +234,13 @@ export default function ViewGroupInfo({ groupId, ...props }) {
                     >
                         Assign Existing Group
                     </PrimaryButton>
-
                     <PrimaryButton
                         className="shrink-0"
                         onClick={createNewbatch}
                     >
-                        Remove
+                        Assign Existing Group
                     </PrimaryButton>
+
                     <PrimaryButton
                         className="shrink-0"
                         onClick={createNewbatch}
@@ -255,11 +305,10 @@ export default function ViewGroupInfo({ groupId, ...props }) {
                                 let selectedRowsImages = selectedRows[
                                     "selectedRows"
                                 ].map((row) => {
-                                    if (row.profile_pic) {
-                                        return `${baseURL}/storage/students/${row.id}/profile_pictures/${row.profile_pic}`;
-                                    } else {
-                                        return `${baseURL}/storage/dummy/profile_pic.jpg`;
-                                    }
+                                    return getStudentImageURL(
+                                        row.id,
+                                        row.profile_pic
+                                    );
                                 });
                                 let selectedId = selectedRows[
                                     "selectedRows"

@@ -180,6 +180,20 @@ export const studentRegistrationFormFields = {
         label: "Gender",
         value: "",
         type: "select",
+        options: [
+            {
+                value: "1",
+                text: "Male",
+            },
+            {
+                value: "2",
+                text: "Female",
+            },
+            {
+                value: "3",
+                text: "Do not disclose",
+            },
+        ],
         validatorRules: [],
         fieldValidationStatus: {
             isInvalid: false,
@@ -188,8 +202,22 @@ export const studentRegistrationFormFields = {
     },
     course: {
         label: "Course",
-        value: "",
+        value: "1",
         type: "select",
+        options: [
+            {
+                value: "1",
+                text: "Full Stack Web Development",
+            },
+            {
+                value: "2",
+                text: "Web Design",
+            },
+            {
+                value: "3",
+                text: "Python",
+            },
+        ],
         validatorRules: [],
         fieldValidationStatus: {
             isInvalid: false,
@@ -211,6 +239,155 @@ export const studentRegistrationFormFields = {
         type: "text",
         value: "",
         validatorRules: ["notEmpty", "minLength|2"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+};
+
+// configurations for students attendance form fields
+
+// Configuration for student registration form fields
+export let studentAttendanceStatusFormField = {
+    "is_present[]": {
+        label: "",
+        value: "unchecked",
+        type: "toggle",
+        options: { checked: "Present", unchecked: "Absent" },
+        validatorRules: [],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+};
+
+export const studentAttendanceRemarkFormField = {
+    "remark[]": {
+        label: "Remark",
+        value: "",
+        type: "textarea",
+        validatorRules: [],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+};
+export const studentAttendanceEarlyLeaveFormField = {
+    "late_entry_by_minutes[]": {
+        label: "Late entry in minutes",
+        value: "0",
+        type: "select",
+        options: [
+            {
+                text: "0",
+                value: 0,
+            },
+            {
+                text: "5",
+                value: 5,
+            },
+            {
+                text: "10",
+                value: 10,
+            },
+            {
+                text: "15",
+                value: 15,
+            },
+            {
+                text: "20",
+                value: 20,
+            },
+            {
+                text: "25",
+                value: 25,
+            },
+            {
+                text: "30",
+                value: 30,
+            },
+            {
+                text: "35",
+                value: 35,
+            },
+            {
+                text: "40",
+                value: 40,
+            },
+            {
+                text: "45",
+                value: 45,
+            },
+        ],
+        validatorRules: [],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    "early_leave_by_minutes[]": {
+        label: "Early Leave in minutes",
+        value: "0",
+        type: "select",
+        options: [
+            {
+                text: "0",
+                value: 0,
+            },
+            {
+                text: "5",
+                value: 5,
+            },
+            {
+                text: "10",
+                value: 10,
+            },
+            {
+                text: "15",
+                value: 15,
+            },
+            {
+                text: "20",
+                value: 20,
+            },
+            {
+                text: "25",
+                value: 25,
+            },
+            {
+                text: "30",
+                value: 30,
+            },
+            {
+                text: "35",
+                value: 35,
+            },
+            {
+                text: "40",
+                value: 40,
+            },
+            {
+                text: "45",
+                value: 45,
+            },
+        ],
+        validatorRules: [],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+};
+export const studentAttendanceOnLeaveFormField = {
+    "is_leave_uninformed[]": {
+        label: "",
+        value: "unchecked",
+        type: "toggle",
+        options: { checked: "Informed Leave", unchecked: "Uninformed Leave" },
+        validatorRules: [],
         fieldValidationStatus: {
             isInvalid: false,
             message: "",
