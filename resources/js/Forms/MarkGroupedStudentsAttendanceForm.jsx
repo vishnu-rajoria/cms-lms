@@ -1,5 +1,5 @@
 import { baseURL } from "@/Env";
-
+import { router } from "@inertiajs/react";
 import { getFormValidationStatus } from "@/Helpers/FormHelper";
 import { useState, useEffect } from "react";
 import StudentAttendanceForm from "./StudentAttendanceForm";
@@ -10,7 +10,8 @@ import InputLabel from "@/Components/InputLabel";
 export default function MarkGroupedStudentsAttendanceForm({
     groupId,
     students,
-    responseHandler,
+    selectedDate,
+
     ...props
 }) {
     const formId = "group-students-attendance-form";
@@ -25,24 +26,6 @@ export default function MarkGroupedStudentsAttendanceForm({
         setIsPrevioslyStoredGroupAttendanceLoaded,
     ] = useState(false);
 
-    let [
-        isPrevioslyStoredGroupAttendanceinDB,
-        setIsPrevioslyStoredGroupAttendanceinDB,
-    ] = useState(false);
-
-    // let [selectedDate, setSelectedDate] = useState(
-    //     (function (d) {
-    //         d.setDate(d.getDate() - 1);
-    //         return d;
-    //     })(new Date())
-    //         .toISOString()
-    //         .slice(0, 10)
-    // );
-
-    let [selectedDate, setSelectedDate] = useState(
-        new Date().toISOString().slice(0, 10)
-    );
-
     function submitHandler(e) {
         e.preventDefault();
         // Display a loading toast message at the bottom-right
@@ -50,19 +33,19 @@ export default function MarkGroupedStudentsAttendanceForm({
             position: "bottom-right",
         });
 
-        console.log("Form submitted");
+        // console.log("Form submitted");
 
         const form = document.querySelector("#" + formId);
 
         // Create a FormData object from the form element
         let formData = new FormData(form);
 
-        console.log(formData);
+        // console.log(formData);
         // Validate the form overall with validating all the form fields grouped together
         // let formValidationStatus = getFormValidationStatus(allFormFieldsGroup);
         let formValidationStatus = { isInvalid: false };
-        console.log("Form validation status inside submitHandler: ");
-        console.log(formValidationStatus);
+        // console.log("Form validation status inside submitHandler: ");
+        // console.log(formValidationStatus);
 
         if (formValidationStatus.isInvalid) {
             toast.update(toastId, {
@@ -82,7 +65,7 @@ export default function MarkGroupedStudentsAttendanceForm({
                     // Log the response from the server
                     console.log("Response from server");
                     console.log(response);
-                    responseHandler(response);
+
                     toast.update(toastId, {
                         render: "Attendace Saved Successfully",
                         type: "success",
@@ -92,6 +75,13 @@ export default function MarkGroupedStudentsAttendanceForm({
                         transition: Zoom,
                         autoClose: 5000,
                     });
+                    router.visit(
+                        route(
+                            "view.group.info",
+                            { group_id: groupId },
+                            { method: "get" }
+                        )
+                    );
                 })
                 .catch(function (error) {
                     // Log the error from the server
@@ -120,25 +110,19 @@ export default function MarkGroupedStudentsAttendanceForm({
             .post(getPrevioslyStoredGroupAttendanceUrl, formData)
             .then(function (response) {
                 // Log the response from the server
-                console.log(
-                    "Response from server : Previosuly Stored Group Attenadance"
-                );
-                console.log(response.data.studentsAttendance);
+                // console.log(
+                //     "Response from server : Previosuly Stored Group Attenadance"
+                // );
+                // console.log(response.data.studentsAttendance);
                 setPrevioslyStoredGroupAttendance(
                     response.data.studentsAttendance
                 );
-                setIsPrevioslyStoredGroupAttendanceLoaded(false);
                 setIsPrevioslyStoredGroupAttendanceLoaded(true);
-                if (response.data.studentsAttendance.length > 0) {
-                    setIsPrevioslyStoredGroupAttendanceinDB(true);
-                } else {
-                    setIsPrevioslyStoredGroupAttendanceinDB(false);
-                }
             })
             .catch(function (error) {
                 // Log the error from the server
-                console.log("Error from server");
-                console.log(error.response.data);
+                // console.log("Error from server");
+                // console.log(error.response.data);
             });
     }
 
@@ -149,93 +133,103 @@ export default function MarkGroupedStudentsAttendanceForm({
                 studentAttendance.group_id == groupId &&
                 studentAttendance.date == date
             ) {
-                console.log("method returning :");
-                console.log(studentAttendance);
                 return studentAttendance;
             }
         });
     }
 
     useEffect(() => {
-        console.log(
-            "Inside useeffect getting previosult stored group attendance"
-        );
+        // console.log(
+        //     "Inside useeffect getting previosult stored group attendance"
+        // );
         getPrevioslyStoredGroupAttendance(groupId, selectedDate);
     }, [selectedDate]);
 
     return (
-        <div className="">
-            <h1 className="px-6 py-6 text-2xl text-green-300">
+        <div>
+            <h1 className="py-6 text-2xl text-green-300">
                 Marks Student Attendance
             </h1>
+            <InputLabel>Date of attendance</InputLabel>
+            <div className="text-white text-xl">{selectedDate}</div>
+            {/* {JSON.stringify(previoslyStoredGroupAttendance)} */}
             <form
                 onSubmit={submitHandler}
-                className="grid gap-2"
+                className="grid"
                 id={formId}
                 action={formSubmitionUrl}
             >
-                <div className="shadow-xl p-6">
-                    <InputLabel>Date of attendance</InputLabel>
-                    <TextInput
-                        name="date"
+                <div className="shadow-xl pb-2">
+                    <input
                         type="date"
                         value={selectedDate}
-                        onChange={(event) =>
-                            setSelectedDate(event.target.value)
-                        }
+                        hidden
+                        name="date"
+                        readOnly
                     />
+
                     <input
                         type="text"
-                        name=""
+                        name="saved_previously"
                         id=""
-                        defaultValue={
-                            setIsPrevioslyStoredGroupAttendanceinDB ? 1 : 0
+                        value={
+                            previoslyStoredGroupAttendance.length > 0
+                                ? "1"
+                                : "0"
                         }
+                        readOnly
+                        hidden
                     />
                 </div>
-                {/* {JSON.stringify(previoslyStoredGroupAttendance)} */}
-                {students.map((student, index) => {
-                    return (
-                        <div
-                            key={student.id + "_" + index}
-                            className="shadow-xl p-6 text-slate-400"
-                        >
-                            <div className="flex items-center">
-                                <img
-                                    className="w-[60px] h-[60px] rounded-full "
-                                    src={getStudentImageURL(
-                                        student.id,
-                                        student.profile_pic
-                                    )}
-                                    alt=""
-                                />
-                                <span className="ml-2">{student.name}</span>
+                <div className="grid grid-cols-2 ">
+                    {/* {JSON.stringify(previoslyStoredGroupAttendance)} */}
+                    {students.map((student, index) => {
+                        return (
+                            <div
+                                key={student.id + "_" + index}
+                                className="shadow-xl p-6 text-slate-400 border-[1px] border-slate-700"
+                            >
+                                <div className="flex items-center">
+                                    <img
+                                        className="w-[60px] h-[60px] rounded-full "
+                                        src={getStudentImageURL(
+                                            student.id,
+                                            student.profile_pic
+                                        )}
+                                        alt=""
+                                    />
+                                    <span className="ml-2">{student.name}</span>
 
-                                <input
-                                    type="hidden"
-                                    name="student_id[]"
-                                    value={student.id}
-                                />
-                                <input
-                                    type="hidden"
-                                    name="group_id[]"
-                                    value={groupId}
-                                />
+                                    <input
+                                        type="hidden"
+                                        name="student_id[]"
+                                        value={student.id}
+                                        readOnly
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="group_id[]"
+                                        value={groupId}
+                                        readOnly
+                                    />
+                                </div>
+                                {isPrevioslyStoredGroupAttendanceLoaded && (
+                                    <StudentAttendanceForm
+                                        previouslyStoredAttendance={getPrevioslyStoredStudentAttendance(
+                                            student.id,
+                                            groupId,
+                                            selectedDate
+                                        )}
+                                        key={student.id + "_" + index}
+                                    />
+                                )}
                             </div>
-                            {isPrevioslyStoredGroupAttendanceLoaded && (
-                                <StudentAttendanceForm
-                                    previouslyStoredAttendance={getPrevioslyStoredStudentAttendance(
-                                        student.id,
-                                        groupId,
-                                        selectedDate
-                                    )}
-                                    key={student.id + "_" + index}
-                                />
-                            )}
-                        </div>
-                    );
-                })}
-                <button className="btn primary-btn">Save</button>
+                        );
+                    })}
+                </div>
+                <div className="flex justify-end py-4">
+                    <button className="btn btn-lg btn-success">Save</button>
+                </div>
             </form>
         </div>
     );

@@ -12,59 +12,81 @@ export default function StudentAttendanceForm({
     previouslyStoredAttendance,
     ...props
 }) {
+    let studentAttendanceStatusFormFieldTemp = JSON.parse(
+        JSON.stringify(studentAttendanceStatusFormField)
+    );
+    let studentAttendanceRemarkFormFieldTemp = JSON.parse(
+        JSON.stringify(studentAttendanceRemarkFormField)
+    );
+    let studentAttendanceEarlyLeaveFormFieldTemp = JSON.parse(
+        JSON.stringify(studentAttendanceEarlyLeaveFormField)
+    );
+    let studentAttendanceOnLeaveFormFieldTemp = JSON.parse(
+        JSON.stringify(studentAttendanceOnLeaveFormField)
+    );
+
     const [previouslyAttendance, setPrevioslyAttendance] = useState(
         previouslyStoredAttendance[0]
     );
 
     // {"id":33,"user_id":70,"group_id":4,"date":"2024-12-21","is_present":1,"is_leave_uninformed":1,"late_entry_by_minutes":10,"early_leave_by_minutes":0,"remark":"10 minutes late","created_by_id":1}
-    console.log("value of studentAttendanceStatusFormField : ");
-    console.log(studentAttendanceStatusFormField);
-    console.log("and previouslyAttendance is ");
-    console.log(previouslyAttendance);
+    // console.log("value of studentAttendanceStatusFormField : ");
+    // console.log(studentAttendanceStatusFormField);
+    // console.log("and previouslyAttendance is ");
+    // console.log(previouslyAttendance);
 
-    if (previouslyAttendance != undefined) {
-        studentAttendanceStatusFormField["is_present[]"].value =
+    if (previouslyAttendance !== undefined) {
+        studentAttendanceStatusFormFieldTemp["is_present[]"].value =
             previouslyAttendance.is_present ? "checked" : "unchecked";
 
-        studentAttendanceRemarkFormField["remark[]"].value =
+        studentAttendanceRemarkFormFieldTemp["remark[]"].value =
             previouslyAttendance.remark;
 
-        studentAttendanceEarlyLeaveFormField["late_entry_by_minutes[]"].value =
-            previouslyAttendance.late_entry_by_minutes;
+        studentAttendanceEarlyLeaveFormFieldTemp[
+            "late_entry_by_minutes[]"
+        ].value = previouslyAttendance.late_entry_by_minutes;
 
-        studentAttendanceEarlyLeaveFormField["early_leave_by_minutes[]"].value =
-            previouslyAttendance.early_leave_by_minutes;
+        studentAttendanceEarlyLeaveFormFieldTemp[
+            "early_leave_by_minutes[]"
+        ].value = previouslyAttendance.early_leave_by_minutes;
 
-        studentAttendanceOnLeaveFormField["is_leave_uninformed[]"].value =
+        studentAttendanceOnLeaveFormFieldTemp["is_leave_uninformed[]"].value =
             !previouslyAttendance.is_leave_uninformed ? "checked" : "unchecked";
         // console.log("before creting state variable is_present is ");
         // console.log(studentAttendanceStatusFormField["is_present[]"].value);
     }
+
     const [isOnLeave, setIsOnLeave] = useState(
-        previouslyAttendance && !previouslyAttendance.is_present ? true : false
+        !previouslyAttendance || !previouslyAttendance.is_present ? true : false
     );
 
     const [
         studentAttendanceStatusFormFieldData,
         setStudentAttendanceStatusFormFieldData,
-    ] = useState(JSON.parse(JSON.stringify(studentAttendanceStatusFormField)));
+    ] = useState(
+        JSON.parse(JSON.stringify(studentAttendanceStatusFormFieldTemp))
+    );
 
     const [
         studentAttendanceOnLeaveFormFieldData,
         setStudentAttendanceOnLeaveFormFieldData,
-    ] = useState(JSON.parse(JSON.stringify(studentAttendanceOnLeaveFormField)));
+    ] = useState(
+        JSON.parse(JSON.stringify(studentAttendanceOnLeaveFormFieldTemp))
+    );
 
     const [
         studentAttendanceEarlyLeaveFormFieldData,
         setStudentAttendanceEarlyLeaveFormFieldData,
     ] = useState(
-        JSON.parse(JSON.stringify(studentAttendanceEarlyLeaveFormField))
+        JSON.parse(JSON.stringify(studentAttendanceEarlyLeaveFormFieldTemp))
     );
 
     const [
         studentAttendanceRemarkFormFieldData,
         setStudentAttendanceRemarkFormFieldData,
-    ] = useState(JSON.parse(JSON.stringify(studentAttendanceRemarkFormField)));
+    ] = useState(
+        JSON.parse(JSON.stringify(studentAttendanceRemarkFormFieldTemp))
+    );
 
     const allFormFieldsGroup = {
         studentAttendanceStatusFormFieldData: {
@@ -107,17 +129,17 @@ export default function StudentAttendanceForm({
                         onChange: [setData],
                         onClick: [
                             (key, event, dataFieldsGroupVariable) => {
-                                console.log(key);
-                                console.log("Status received is ");
+                                // console.log(key);
+                                // console.log("Status received is ");
 
                                 event.target.getAttribute("data-status") ===
                                 "true"
                                     ? setIsOnLeave(true)
                                     : setIsOnLeave(false);
 
-                                console.log(event.target);
+                                // console.log(event.target);
 
-                                console.log(dataFieldsGroupVariable);
+                                // console.log(dataFieldsGroupVariable);
                             },
                             // console.log(
                             //     `status changed ${event.target.getAttribute(
@@ -148,8 +170,8 @@ export default function StudentAttendanceForm({
         //// Update the value of the field in the formData object
         let newDataFieldsGroup = { ...eval(dataFieldsGroupVariable) };
 
-        console.log("newDataFieldsGroup is : ");
-        console.log(newDataFieldsGroup);
+        // console.log("newDataFieldsGroup is : ");
+        // console.log(newDataFieldsGroup);
 
         newDataFieldsGroup[key].value = value;
         // Get the validation rules for the field

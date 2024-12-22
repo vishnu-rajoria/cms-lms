@@ -148,4 +148,13 @@ class GroupController extends Controller
         ]);
     }
 
+    function displayMarkAttendanceForm($group_id, $date)
+    {
+       
+        return Inertia::render('Modules/Group/MarkGroupedStudentsAttendance',[
+            'groupId' => $group_id,
+            'selectedDate' => $date
+        ]);
+    }  
+
 }

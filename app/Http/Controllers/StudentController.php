@@ -202,25 +202,39 @@ class StudentController extends Controller
     function saveStudentsAttendance(Request $request)
     {
         $data = $request->all();
+        $isSavedPreviously =$request->get('saved_previously');
+       
         try{
-        foreach($data['student_id'] as $key => $value)
-        {
-            $studentAttendanceRecord = array();
-            $studentAttendanceRecord['date'] = $data['date'];
-            $studentAttendanceRecord['user_id'] = $data['student_id'][$key];
-            $studentAttendanceRecord['group_id'] = $data['group_id'][$key];
-            $studentAttendanceRecord['is_present'] = $data['is_present'][$key];
-            $studentAttendanceRecord['late_entry_by_minutes'] = $data['late_entry_by_minutes'][$key];
-            $studentAttendanceRecord['early_leave_by_minutes'] = $data['early_leave_by_minutes'][$key];
-            $studentAttendanceRecord['is_leave_uninformed'] = !$data['is_leave_uninformed'][$key];
-            $studentAttendanceRecord['remark'] = $data['remark'][$key];
-            $studentAttendanceRecord['created_by_id'] = Auth::user()->id;
-            
-           
-                StudentAttendance::create($studentAttendanceRecord);
-           
-            
-        }
+            foreach($data['student_id'] as $key => $value)
+            {
+                $studentAttendanceRecord = array();
+                $studentAttendanceRecord['date'] = $data['date'];
+                $studentAttendanceRecord['user_id'] = $data['student_id'][$key];
+                $studentAttendanceRecord['group_id'] = $data['group_id'][$key];
+                $studentAttendanceRecord['is_present'] = $data['is_present'][$key];
+                $studentAttendanceRecord['late_entry_by_minutes'] = $data['late_entry_by_minutes'][$key];
+                $studentAttendanceRecord['early_leave_by_minutes'] = $data['early_leave_by_minutes'][$key];
+                $studentAttendanceRecord['is_leave_uninformed'] = !$data['is_leave_uninformed'][$key];
+                $studentAttendanceRecord['remark'] = $data['remark'][$key];
+                $studentAttendanceRecord['created_by_id'] = Auth::user()->id;
+                
+                StudentAttendance::updateOrCreate(
+                    [
+                        'user_id'=>$studentAttendanceRecord['user_id'],
+                        'group_id'=>$studentAttendanceRecord['group_id'],
+                        'date'=>$studentAttendanceRecord['date']
+                    ],
+                    [
+                        'is_present'=>$studentAttendanceRecord['is_present'],
+                        'late_entry_by_minutes' => $studentAttendanceRecord['late_entry_by_minutes'],
+                        'early_leave_by_minutes' => $studentAttendanceRecord['early_leave_by_minutes'] ,
+                        'is_leave_uninformed' => $studentAttendanceRecord['is_leave_uninformed'],
+                        'remark' => $studentAttendanceRecord['remark'],
+                        'created_by_id' => $studentAttendanceRecord['created_by_id']
+
+                ]);
+                
+            }
         }
         catch(\Exception $e)
         {

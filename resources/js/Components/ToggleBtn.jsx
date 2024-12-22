@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 export default function ToggleBtn({ value, options, name, ...props }) {
     const isChecked = value === "checked" ? true : false;
     const [checked, setChecked] = useState(isChecked);
-    console.log(`Checked :${checked}`);
+    // console.log(`Checked :${checked}`);
     let checkedKnobClasses = "";
     let checkedKnobContainerClasses = "";
 
@@ -30,7 +30,8 @@ export default function ToggleBtn({ value, options, name, ...props }) {
                 min={0}
                 max={1}
                 name={name}
-                defaultValue={checked ? 1 : 0}
+                value={checked ? 1 : 0}
+                readOnly
                 hidden
             />
 

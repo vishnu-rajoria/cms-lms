@@ -6,17 +6,19 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import Modal from "@/Components/Modal";
 import GroupRegistrationForm from "@/Forms/GroupRegistrationForm";
 import MarkStudentAttendanceForm from "@/Forms/MarkGroupedStudentsAttendanceForm";
+import { formatISO, parseISO } from "date-fns";
 import DataTable, { createTheme } from "react-data-table-component";
 import { CreateDarkTableTheme } from "@/Helpers/ThemeHelper";
 import { studentsTableColumnsMini } from "@/Data/Student";
 import { getStudentImageURL } from "@/Helpers/ImageHelper";
 import { toast } from "react-toastify";
 import axios from "axios";
-import DatePicker from "react-date-picker";
-import "react-date-picker/dist/DatePicker.css";
+import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-import { set } from "date-fns";
+import { set, setDate } from "date-fns";
+import Loading from "@/Components/Loading";
+import NavLink from "@/Components/NavLink";
 // createTheme creates a new theme named solarized that overrides the build in dark theme
 const baseURL = import.meta.env.VITE_APP_URL;
 CreateDarkTableTheme();
@@ -37,7 +39,8 @@ export default function ViewGroupInfo({ groupId, ...props }) {
     const [showModal, setShowModal] = useState(false);
     const [showAttendaceForm, setShowAttendaceForm] = useState(false);
     const [groupRegistrationForm, setGroupRegistrationForm] = useState(false);
-
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [isDateMarked, setIsDateMarked] = useState(false);
     const [showTable, setShowTable] = useState(false);
     const [tableTheme, setTableTheme] = useState("solarized");
 
@@ -75,7 +78,7 @@ export default function ViewGroupInfo({ groupId, ...props }) {
      * data loading. If an error occurs, the toast message is updated to
      * show an error message.
      */
-    function getStudents(type) {
+    function getStudents(groupId) {
         // Display a loading toast message at the bottom-right
         const toastId = toast.loading("loading data...", {
             position: "bottom-right",
@@ -128,7 +131,7 @@ export default function ViewGroupInfo({ groupId, ...props }) {
     function displayStudentsRecords(selectedOption) {
         if (selectedOption == "all") {
             console.log("Display all students list");
-            getStudents(selectedOption);
+            getStudents(groupId);
         } else {
             console.log("Display students list for group " + selectedOption);
         }
@@ -174,13 +177,6 @@ export default function ViewGroupInfo({ groupId, ...props }) {
 
                     {!pending && (
                         <>
-                            <DatePicker
-                                onChange={(value) => {
-                                    console.log("date changed");
-                                    console.log(value);
-                                }}
-                                value={new Date()}
-                            />
                             <PrimaryButton
                                 onClick={() => {
                                     setShowModal(true);
@@ -206,11 +202,48 @@ export default function ViewGroupInfo({ groupId, ...props }) {
                 }}
             >
                 {showAttendaceForm && (
-                    <MarkStudentAttendanceForm
-                        groupId={groupId}
-                        students={students}
-                        responseHandler={studentAttendanceResponseHandler}
-                    />
+                    // <MarkStudentAttendanceForm
+                    //     groupId={groupId}
+                    //     students={students}
+                    //     responseHandler={studentAttendanceResponseHandler}
+                    // />
+                    <div className="flex flex-col justify-center items-center p-6 gap-6 h-full">
+                        {!isDateMarked && (
+                            <>
+                                <h3 className="text-white py-3">
+                                    Select Date to mark attendance
+                                </h3>
+                                <Calendar
+                                    format="dd-MM-y"
+                                    isOpen={true}
+                                    onChange={(value) => {
+                                        console.log("date changed");
+                                        console.log(value);
+                                        setSelectedDate(value);
+                                    }}
+                                    value={selectedDate}
+                                />
+
+                                <NavLink
+                                    className="text-green-100 bg-green-700 border-green-300 rounded-md p-2 px-6 hover:bg-green-600  hover:text-white"
+                                    href={route(
+                                        "mark.student.attendance.form",
+                                        {
+                                            group_id: groupId,
+                                            date: formatISO(selectedDate).slice(
+                                                0,
+                                                10
+                                            ),
+                                        }
+                                    )}
+                                    onClick={() => setIsDateMarked(true)}
+                                >
+                                    Click to Mark Attendance
+                                </NavLink>
+                            </>
+                        )}
+                        {isDateMarked && <Loading isVisible={true} />}
+                    </div>
                 )}
                 {groupRegistrationForm && (
                     <GroupRegistrationForm
