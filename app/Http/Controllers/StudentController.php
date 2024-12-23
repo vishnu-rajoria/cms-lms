@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TestMail;
 use Auth;
+use DB;
 
 // Models
 use App\Models\User;
@@ -35,6 +36,24 @@ class StudentController extends Controller
     {
         return Inertia::render('Modules/Student/ManageStudents'); 
     }
+    public function getStudentDetails($studentId)
+    {
+        $studentDetails =  User::with('studentDetails')->where(['id'=>$studentId])->first();
+
+        $groups = DB::table('students_of_groups')->select('group_id')->distinct()->where(['user_id'=>$studentId])->get();
+        return response()->json(["studentDetails"=>$studentDetails,'groups'=>$groups]);
+    }
+
+    function getGroupStudentAttendance($userId,$groupId)
+    {
+        $studentAttendanceFormatted = [];
+        $studentAttendance = StudentAttendance::select('date','is_present','is_leave_uninformed','late_entry_by_minutes','early_leave_by_minutes')->where(['user_id'=>$userId,'group_id'=>$groupId])->get();
+        foreach($studentAttendance as $record)
+        {
+            $studentAttendanceFormatted[$record->date] = $record;
+        }
+        return response()->json(["studentAttendance"=>$studentAttendanceFormatted]);
+    }
 
     public function getStudents($group=null)
     {
@@ -45,7 +64,7 @@ class StudentController extends Controller
         {
               // Query select() must include the primary key of main tables and foreign key of related tables
               $studentsRecordsFromDB = User::query()->select('id','name','email')->with(['studentDetails'=>function($query){
-                $query->select('user_id','fname','course','profile_pic','created_at');
+                $query->select('user_id','fname','course','profile_pic','doj');
             }])->where(['role_id' => 3])->orderByDesc('created_at')->get();
             $studentsRecords = [];
 
@@ -75,7 +94,7 @@ class StudentController extends Controller
             }
             
             $studentsRecordsFromDB = User::query()->select('id','name','email')->with(['studentDetails'=>function($query){
-                $query->select('user_id','fname','course','profile_pic','created_at');
+                $query->select('user_id','fname','course','profile_pic','doj');
             }])->where(['role_id' => 3])->whereIn('id',$selectedStudentsId)->orderByDesc('created_at')->get();
             $studentsRecords = [];
 
@@ -250,6 +269,13 @@ class StudentController extends Controller
         $date = $request->get('date');
         $studentsAttendance = StudentAttendance::where('group_id',$groupId)->where('date',$date)->get();
         return response()->json(["studentsAttendance" => $studentsAttendance],200);
+    }
+
+    function showProfile($student_id
+    ){
+        return Inertia::render('Modules/Student/Profile',[
+            'studentId' => $student_id,
+        ]);
     }
 
 }

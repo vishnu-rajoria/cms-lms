@@ -50,7 +50,11 @@ Route::prefix("group")->middleware(['auth', 'verified','verify.access.control'])
 Route::prefix("api")->middleware(['auth', 'verified','verify.access.control'])->group(function(){
 
         Route::get('/get-students/{group_id?}',[StudentController::class,"getStudents"])->name("api.get.students");
+        
+        Route::get('/get-student-details/{student_id?}',[StudentController::class,"getStudentDetails"])->name("api.get.student.details");
+        Route::get('/get-group-student-attendance/{user_id}/{group_id}',[StudentController::class,"getGroupStudentAttendance"])->name("api.get.group.student.attendance");
 
+        
         Route::post('/save-student',[StudentController::class,'save'])->name('api.save.student');
             
         Route::post('/save-students-attendance',[StudentController::class,'saveStudentsAttendance'])->name('api.save.students.attendance');
@@ -66,7 +70,9 @@ Route::prefix("api")->middleware(['auth', 'verified','verify.access.control'])->
 
 
 Route::prefix("student")->middleware(['auth', 'verified','verify.access.control'])->group(function(){
-    Route::get('/dashboard',[StudentsController::class,'index'])->name('student.dashboard');
+    Route::get('/dashboard',[StudentController::class,'index'])->name('student.dashboard');
+    Route::get('/profile/{student_id}',[StudentController::class,'showProfile'])->name('student.profile');
+    
 
 });
 

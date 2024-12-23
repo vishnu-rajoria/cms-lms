@@ -1,9 +1,7 @@
 import Badge from "@/Components/Badge";
-import { format } from "date-fns";
-import { toDate } from "date-fns";
-import parseISO from "date-fns/parseISO";
-import { formatDistance } from "date-fns";
-import { formatISO } from "date-fns";
+
+import { Link, router } from "@inertiajs/react";
+import { formattedMysqlDateAndTime } from "@/Helpers/TimeHelper";
 const baseURL = import.meta.env.VITE_APP_URL;
 
 export const studentsTableColumnsMini = [
@@ -12,19 +10,21 @@ export const studentsTableColumnsMini = [
         selector: (row, index) => {
             if (row.profile_pic) {
                 return (
-                    <a href="#">
+                    <Link href={route("student.profile", row.id)}>
                         <img
                             className="w-[50px] rounded-full p-2"
                             src={`${baseURL}/storage/students/${row.id}/profile_pictures/${row.profile_pic}`}
                         />
-                    </a>
+                    </Link>
                 );
             } else {
                 return (
-                    <img
-                        className="w-[50px] rounded-full p-2"
-                        src={`${baseURL}/storage/dummy/profile_pic.jpg`}
-                    />
+                    <Link href={route("student.profile", row.id)}>
+                        <img
+                            className="w-[50px] rounded-full p-2"
+                            src={`${baseURL}/storage/dummy/profile_pic.jpg`}
+                        />
+                    </Link>
                 );
             }
         },
@@ -87,17 +87,7 @@ export const studentsTableColumnsMini = [
     {
         name: "Joining date",
         selector: (row, index) => {
-            return (
-                format(
-                    formatISO(parseISO(row.created_at), {
-                        representation: "date",
-                    }),
-                    "dd-L-yyyy"
-                ) +
-                " / " +
-                formatDistance(new Date(), parseISO(row.created_at)) +
-                " ago "
-            );
+            return formattedMysqlDateAndTime(row.doj);
         },
         sortable: true,
         // width: "150px",
