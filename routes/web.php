@@ -59,9 +59,11 @@ Route::prefix("api")->middleware(['auth', 'verified','verify.access.control'])->
             
         Route::post('/save-students-attendance',[StudentController::class,'saveStudentsAttendance'])->name('api.save.students.attendance');
             
-        Route::get('/get-groups/{type?}',[GroupController::class,"getGroups"])->name("api.get.groups");
-
+        Route::get('/get-groups',[GroupController::class,"getGroups"])->name("api.get.groups");
+     
         Route::post('/save-group',[GroupController::class,'saveStudentGroup'])->name('api.save.group');
+
+        Route::post('/assign-students-to-group',[GroupController::class,'assignStudentsToGroup'])->name('api.assign.students.to.group');
 
         Route::post('/get-group-students-attendance',[StudentController::class,'getGroupStudentsAttendance'])->name('api.get.group.students.attendance');
 });

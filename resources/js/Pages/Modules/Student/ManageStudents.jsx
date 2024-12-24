@@ -10,6 +10,7 @@ import { CreateDarkTableTheme } from "@/Helpers/ThemeHelper";
 import { studentsTableColumnsMini } from "@/Data/Student";
 import { toast } from "react-toastify";
 import axios from "axios";
+import AssignStudentToGroupForm from "@/Forms/AssignStudentToGroupForm";
 // createTheme creates a new theme named solarized that overrides the build in dark theme
 const baseURL = import.meta.env.VITE_APP_URL;
 CreateDarkTableTheme();
@@ -30,7 +31,27 @@ export default function ManageStudents() {
     const [showModal, setShowModal] = useState(false);
     const [showTable, setShowTable] = useState(false);
     const [tableTheme, setTableTheme] = useState("solarized");
-
+    const [showGroupRegistrationForm, setShowGroupRegistrationForm] =
+        useState(false);
+    const [showAssignStudentToGroupForm, setShowAssignStudentToGroupForm] =
+        useState(false);
+    const [groupList, setGroupList] = useState([]);
+    function getGroupList() {
+        if (groupList.length > 0) return;
+        axios
+            .get(baseURL + "/api/get-groups")
+            .then(function (response) {
+                // Log the response from the server
+                console.log("Response from server");
+                console.log(response);
+                setGroupList(response.data.groups);
+            })
+            .catch(function (error) {
+                // Log the error from the server
+                console.log("Error from server");
+                console.log(error.response.data);
+            });
+    }
     // Function to set the initial theme for the table
     // function initiateTheme() {
     //     // Retrieve the previously saved theme mode from localStorage
@@ -111,6 +132,14 @@ export default function ManageStudents() {
     function createNewbatch() {
         // alert("Create new batch");
         setShowModal(true);
+        setShowAssignStudentToGroupForm(false);
+        setShowGroupRegistrationForm(true);
+    }
+
+    function assignToExistingBatch() {
+        setShowModal(true);
+        setShowAssignStudentToGroupForm(true);
+        setShowGroupRegistrationForm(false);
     }
 
     function displayStudentsRecords(selectedOption) {
@@ -144,6 +173,8 @@ export default function ManageStudents() {
                 currentlySelectedStudentGroupOption
         );
         displayStudentsRecords(currentlySelectedStudentGroupOption);
+
+        getGroupList();
     }, [currentlySelectedStudentGroupOption]);
 
     return (
@@ -164,11 +195,21 @@ export default function ManageStudents() {
             <Head title="Students" />
 
             <Modal show={showModal} onClose={() => setShowModal(false)}>
-                <GroupRegistrationForm
-                    imagesURL={selectedRowsImages}
-                    selectedId={selectedStudentsId}
-                    responseHandler={groupRegistrationResponseHandler}
-                ></GroupRegistrationForm>
+                {showAssignStudentToGroupForm && (
+                    <AssignStudentToGroupForm
+                        groupList={groupList}
+                        imagesURL={selectedRowsImages}
+                        selectedId={selectedStudentsId}
+                        responseHandler={groupRegistrationResponseHandler}
+                    />
+                )}
+                {showGroupRegistrationForm && (
+                    <GroupRegistrationForm
+                        imagesURL={selectedRowsImages}
+                        selectedId={selectedStudentsId}
+                        responseHandler={groupRegistrationResponseHandler}
+                    ></GroupRegistrationForm>
+                )}
             </Modal>
 
             {isRowsSelected && (
@@ -181,10 +222,18 @@ export default function ManageStudents() {
                     </PrimaryButton>
                     <PrimaryButton
                         className="shrink-0"
-                        onClick={createNewbatch}
+                        onClick={assignToExistingBatch}
                     >
                         Assign Existing Group
                     </PrimaryButton>
+                    {selectedRowsImages.length == 1 && (
+                        <PrimaryButton
+                            className="shrink-0"
+                            onClick={assignToExistingBatch}
+                        >
+                            Edit
+                        </PrimaryButton>
+                    )}
 
                     <PrimaryButton
                         className="shrink-0"

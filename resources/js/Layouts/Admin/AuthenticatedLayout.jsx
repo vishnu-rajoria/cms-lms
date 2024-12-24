@@ -18,15 +18,15 @@ export default function AuthenticatedLayout({ header, children }) {
 
     return (
         <Theme>
-            <div className="min-h-screen dark:bg-slate-700">
+            <div className="min-h-screen bg-slate-200 dark:bg-slate-700">
                 <ToastContainer />
-                <nav className="border-b border-gray-100 bg-white dark:invert z-[100]">
+                <nav className="border-gray-100 bg-slate-200 dark:bg-slate-800 z-[100]">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex h-16 justify-between  ">
                             <div className="flex">
-                                <div className="flex shrink-0 items-center">
+                                <div className="flex shrink-0 items-center dark:invert dark:opacity-90">
                                     <Link href="/">
-                                        <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                        <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800 " />
                                     </Link>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
                 </nav>
 
-                <nav className=" border-gray-100 bg-gray-900 justify-start md:justify-center flex overflow-auto z-10 px-6 ">
+                <nav className=" border-gray-100 bg-gradient-to-t from-slate-200 to-slate-300  shadow-lg  dark:bg-gradient-to-t dark:from-slate-900 dark:to-slate-900 justify-start md:justify-center flex overflow-auto z-10 px-6 ">
                     <div className="p-2 flex flex-norwrap items-center justify-start gap-2 ">
                         <NavLink
                             href={route("admin.dashboard")}
@@ -135,7 +135,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 )}
                 <main>
                     <div className="">
-                        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                        <div className="mx-auto max-w-7xl px-6 sm:px-6 lg:px-8">
                             {children}
                         </div>
                     </div>

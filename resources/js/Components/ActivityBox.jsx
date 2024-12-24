@@ -1,3 +1,4 @@
+import { getDayName } from "@/Helpers/TimeHelper";
 export default function ActivityBox({
     date,
     cssClass,
@@ -5,20 +6,25 @@ export default function ActivityBox({
     ...props
 }) {
     let colorClasses = "bg-slate-600 text-slate-400";
+    let dayName = getDayName(date);
+    if (dayName === "Saturday" || dayName === "Sunday") {
+        colorClasses = "bg-slate-800 text-white";
+    }
     if (attendanceInfo) {
         colorClasses = attendanceInfo.is_present
             ? "bg-green-600 text-green-200"
-            : "bg-red-600 text-red-200";
+            : attendanceInfo.is_leave_uninformed
+            ? "bg-red-600 text-red-200"
+            : "bg-orange-400 text-black";
         console.log(attendanceInfo);
     }
-
     return (
         <div
             className={
                 "transition-all duration-300 activity-box w-[14px] h-[14px] rounded-sm " +
                 colorClasses
             }
-            title={date.toISOString().slice(0, 10)}
+            title={date.toISOString().slice(0, 10) + " | " + dayName}
         >
             {/* {console.log(attendanceInfo)} */}
             <div

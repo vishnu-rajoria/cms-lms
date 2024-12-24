@@ -132,7 +132,7 @@ function getDaysInMonthArray(startingDate, endDate) {
     let month = startingMonth;
     let year = startingYear;
     while (year < endYear || month < endMonth) {
-        console.log("Month: " + month + " Year: " + year);
+        // console.log("Month: " + month + " Year: " + year);
         daysInMonthArray.push({
             month: month,
             year: year,

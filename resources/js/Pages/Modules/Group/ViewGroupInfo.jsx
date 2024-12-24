@@ -267,6 +267,7 @@ export default function ViewGroupInfo({ groupId, ...props }) {
                     >
                         Assign Existing Group
                     </PrimaryButton>
+
                     <PrimaryButton
                         className="shrink-0"
                         onClick={createNewbatch}

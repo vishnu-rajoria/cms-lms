@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/Admin/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-import DropdownInput from "@/Components/DropdownInput";
+import Dropdown from "@/Components/Dropdown";
 import PrimaryButton from "@/Components/PrimaryButton";
 import Modal from "@/Components/Modal";
 import GroupRegistrationForm from "@/Forms/GroupRegistrationForm";
@@ -26,7 +26,7 @@ export default function ManageGroups() {
         setCurrentlySelectedGroupGroupOption,
     ] = useState(0);
 
-    const [Groups, setGroups] = useState([]);
+    const [groups, setGroups] = useState([]);
     const [pending, setPending] = useState(true);
     const [isRowsSelected, setIsRowsSelected] = useState(false);
     const [selectedRowsImages, setSelectedRowsImages] = useState([]);
@@ -69,44 +69,46 @@ export default function ManageGroups() {
      * data loading. If an error occurs, the toast message is updated to
      * show an error message.
      */
-    function getGroups(type) {
-        // Display a loading toast message at the bottom-right
-        const toastId = toast.loading("loading data...", {
-            position: "bottom-right",
-        });
-
-        setShowTable(true);
-        axios
-            .get(baseURL + "/api/get-groups/" + type)
-            .then(function (response) {
-                // Log the response from the server
-                // console.log("Response from server");
-                // console.log(response.data.Groups);
-                // Update the Groups state with the data from the server
-                setGroups(response.data.groups);
-                // Set pending state to false indicating data fetch completion
-                setPreviouslySavedGroupsData(response.data.Groups);
-                setPending(false);
-                // Update the toast message to indicate successful data loading
-                toast.update(toastId, {
-                    render: "Data loaded Successfully",
-                    type: "success",
-                    isLoading: false,
-                    autoClose: 2000,
-                });
-            })
-            .catch(function (error) {
-                // Log the error from the server
-                // console.log("Error from server");
-                // console.log(error);
-                // Optionally, you can update the toast to show an error message
-                toast.update(toastId, {
-                    render: "Data loadeding failed",
-                    type: "error",
-                    isLoading: false,
-                    autoClose: 2000,
-                });
+    function getGroups() {
+        if (groups.length < 1) {
+            // Display a loading toast message at the bottom-right
+            const toastId = toast.loading("loading data...", {
+                position: "bottom-right",
             });
+
+            axios
+                .get(baseURL + "/api/get-groups")
+                .then(function (response) {
+                    // Log the response from the server
+                    // console.log("Response from server");
+                    // console.log(response.data.Groups);
+                    // Update the Groups state with the data from the server
+                    setGroups(response.data.groups);
+                    // Set pending state to false indicating data fetch completion
+                    setPreviouslySavedGroupsData(response.data.Groups);
+                    setPending(false);
+                    // Update the toast message to indicate successful data loading
+                    toast.update(toastId, {
+                        render: "Data loaded Successfully",
+                        type: "success",
+                        isLoading: false,
+                        autoClose: 2000,
+                    });
+                    setShowTable(true);
+                })
+                .catch(function (error) {
+                    // Log the error from the server
+                    // console.log("Error from server");
+                    // console.log(error);
+                    // Optionally, you can update the toast to show an error message
+                    toast.update(toastId, {
+                        render: "Data loadeding failed",
+                        type: "error",
+                        isLoading: false,
+                        autoClose: 2000,
+                    });
+                });
+        }
     }
 
     /**
@@ -117,13 +119,9 @@ export default function ManageGroups() {
         setShowModal(true);
     }
 
-    function displayGroupsRecords(selectedOption) {
-        if (selectedOption == "all") {
-            console.log("Display all Groups list");
-            getGroups(selectedOption);
-        } else {
-            console.log("Display Groups list for group " + selectedOption);
-        }
+    function displayGroupsRecords() {
+        console.log("displayGroupsRecords is running : ");
+        getGroups();
     }
 
     function groupSelectorHandler(selectedValue) {
@@ -142,12 +140,12 @@ export default function ManageGroups() {
         }
     }
     useEffect(() => {
-        recoverPreviouslySelectedGroupGroupOption();
+        // recoverPreviouslySelectedGroupGroupOption();
         console.log(
             "displaying record for option : " +
                 currentlySelectedGroupGroupOption
         );
-        displayGroupsRecords(currentlySelectedGroupGroupOption);
+        displayGroupsRecords();
     }, [currentlySelectedGroupGroupOption]);
 
     return (
@@ -205,7 +203,7 @@ export default function ManageGroups() {
                 </div>
             )}
             <div className="group-card-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-2">
-                {Groups.map((group) => {
+                {groups.map((group) => {
                     let picsForIconGroup = [];
                     group.members_info_limited.forEach((record) => {
                         picsForIconGroup.push(
@@ -228,7 +226,7 @@ export default function ManageGroups() {
                     );
 
                     return (
-                        <div className="group-card gap-2 flex text-gray-200 items-start bg-slate-900 p-6 rounded-lg">
+                        <div className="group-card gap-2 flex text-gray-700 dark:text-gray-300 items-start bg-slate-300 dark:bg-slate-900 p-6 rounded-lg">
                             <img
                                 className="w-[50px] rounded-full"
                                 src={getGroupIconURL(
@@ -239,7 +237,7 @@ export default function ManageGroups() {
 
                             <div className="card-content grid gap-2 flex-grow">
                                 <div className="group-header">
-                                    <h3 className="text-xl capitalize">
+                                    <h3 className="text-xl font-bold capitalize">
                                         {group.name}
                                     </h3>
                                 </div>
@@ -256,16 +254,63 @@ export default function ManageGroups() {
                                     {created_at}
                                 </div>
                             </div>
-                            <div className="flex flex-col justify-between h-full">
-                                O
+                            <div className="flex flex-col justify-between items-end h-full">
+                                <Dropdown>
+                                    <Dropdown.Trigger>
+                                        <span className="inline-flex">
+                                            <button
+                                                type="button"
+                                                className="inline-flex items-center rounded-full border border-transparent bg-slate-300 p-1 bg-opacity-20 opacity-50 hover:opacity-75 text-sm font-medium text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="w-[15px] h-[15px] dark:invert"
+                                                    viewBox="0 0 16 16"
+                                                    fill="#fff"
+                                                >
+                                                    <path
+                                                        d="M8 12C9.10457 12 10 12.8954 10 14C10 15.1046 9.10457 16 8 16C6.89543 16 6 15.1046 6 14C6 12.8954 6.89543 12 8 12Z"
+                                                        fill="#000"
+                                                    />
+                                                    <path
+                                                        d="M8 6C9.10457 6 10 6.89543 10 8C10 9.10457 9.10457 10 8 10C6.89543 10 6 9.10457 6 8C6 6.89543 6.89543 6 8 6Z"
+                                                        fill="#000000"
+                                                    />
+                                                    <path
+                                                        d="M10 2C10 0.89543 9.10457 -4.82823e-08 8 0C6.89543 4.82823e-08 6 0.895431 6 2C6 3.10457 6.89543 4 8 4C9.10457 4 10 3.10457 10 2Z"
+                                                        fill="#000000"
+                                                    />
+                                                    <script xmlns="" />
+                                                </svg>
+                                            </button>
+                                        </span>
+                                    </Dropdown.Trigger>
+
+                                    <Dropdown.Content>
+                                        <Dropdown.Link
+                                            href={route("profile.edit")}
+                                        >
+                                            Edit
+                                        </Dropdown.Link>
+
+                                        <Dropdown.Link
+                                            href={route("logout")}
+                                            method="post"
+                                            as="button"
+                                            className="bg-red-900 text-white hover:bg-red-600"
+                                        >
+                                            delete
+                                        </Dropdown.Link>
+                                    </Dropdown.Content>
+                                </Dropdown>
                                 <Link
                                     href={route("view.group.info", {
                                         group_id: group.id,
                                     })}
-                                    className="w-[30px] bg-slate-700 p-2 rounded-full hover:bg-green-600 transition-all ease-in-out duration-300"
+                                    className="w-[30px] h-[30px] bg-slate-700 p-2 rounded-full hover:bg-green-600 transition-all ease-in-out duration-300 flex items-center justify-center"
                                 >
                                     <img
-                                        className="w-full  invert"
+                                        className="h-full invert"
                                         src="https://www.svgrepo.com/show/449159/next.svg"
                                         alt=""
                                     />

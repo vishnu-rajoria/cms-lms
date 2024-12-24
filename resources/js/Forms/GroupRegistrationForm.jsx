@@ -40,6 +40,23 @@ export default function GroupRegistrationForm({
         },
     };
 
+    const [groupList, setGroupList] = useState([]);
+    function getGroupList() {
+        axios
+            .get(baseURL + "/api/get-group-list")
+            .then(function (response) {
+                // Log the response from the server
+                console.log("Response from server");
+                console.log(response);
+                setGroupList(response.data.groups);
+            })
+            .catch(function (error) {
+                // Log the error from the server
+                console.log("Error from server");
+                console.log(error.response.data);
+            });
+    }
+
     attachEventListenersToAllFormFieldsGroup();
     function attachEventListenersToAllFormFieldsGroup() {
         Object.keys(allFormFieldsGroup).forEach((key) => {
@@ -152,6 +169,7 @@ export default function GroupRegistrationForm({
         let dataSetterMethod = eval(dataSetterMethodName);
         dataSetterMethod(newDataFieldsGroup);
     }
+
     return (
         <>
             <IconGroup className="p-5" max={15} imagesURL={imagesURL} />

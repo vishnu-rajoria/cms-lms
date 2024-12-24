@@ -27,7 +27,7 @@ const Trigger = ({ children }) => {
 
             {open && (
                 <div
-                    className="fixed inset-0 z-40"
+                    className="fixed inset-0 z-40 backdrop-blur-sm bg-gray-900 bg-opacity-80"
                     onClick={() => setOpen(false)}
                 ></div>
             )}
@@ -38,7 +38,7 @@ const Trigger = ({ children }) => {
 const Content = ({
     align = "right",
     width = "48",
-    contentClasses = "py-1 bg-white ",
+    contentClasses = "overflow-hidden bg-white ",
     children,
     s,
 }) => {
@@ -67,18 +67,15 @@ const Content = ({
                 enterTo="opacity-100 scale-100"
                 leave="transition ease-in duration-75"
                 leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95 z-40"
+                leaveTo="opacity-0 scale-95 "
             >
                 <div
-                    className={`absolute mt-2 rounded-md shadow-lg dark:shadow-transparent z-[999] ${alignmentClasses} ${widthClasses}`}
-                    style={{
-                        zIndex: 999,
-                    }}
+                    className={`absolute rounded-md shadow-lg dark:shadow-transparent z-50 ${alignmentClasses} ${widthClasses}`}
                     onClick={() => setOpen(false)}
                 >
                     <div
                         className={
-                            `rounded-md ring-1 ring-black ring-opacity-5 z-[900] ` +
+                            `rounded-md ring-1 ring-black ring-opacity-5  ` +
                             contentClasses
                         }
                     >
@@ -95,7 +92,7 @@ const DropdownLink = ({ className = "", children, ...props }) => {
         <Link
             {...props}
             className={
-                "block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none" +
+                "block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none " +
                 className
             }
         >

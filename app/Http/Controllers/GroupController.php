@@ -81,10 +81,6 @@ class GroupController extends Controller
        
         if($type == null)
         {
-            return response()->json(["group"=>null]);
-
-        }
-        else{
                 // Query select() must include the primary key of main tables and foreign key of related tables
                 $groupsRecordsFromDB = Group::select('id','name','group_icon','description','created_at')->where('deleted_at',null)->orderByDesc('created_at')->get();
               
@@ -150,11 +146,34 @@ class GroupController extends Controller
 
     function displayMarkAttendanceForm($group_id, $date)
     {
-       
         return Inertia::render('Modules/Group/MarkGroupedStudentsAttendance',[
             'groupId' => $group_id,
             'selectedDate' => $date
         ]);
     }  
+
+    function assignStudentsToGroup(Request $request)
+    {
+
+        $validated = $request->validate([
+            'group_id' => 'required',
+            'selected_students_id' => 'required',
+        ]);
+
+        $groupId = $request->get('group_id');
+        $selectedStudentsId = $request->get('selected_students_id');
+        // echo $groupId;
+        // print_r($selectedStudentsId);
+
+        foreach($selectedStudentsId as $studentId)
+        {   
+            StudentsOfGroup::firstOrCreate (
+                ['group_id' => $groupId,
+                'user_id' => $studentId],
+                ['created_at' => Carbon::now()]
+           );
+        }
+        return response()->json(["status" => "success"],200);
+    }
 
 }
