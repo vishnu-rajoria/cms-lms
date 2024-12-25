@@ -1,6 +1,7 @@
 import { baseURL } from "@/Env";
 import StudentActivityTracker from "@/Components/StudentActivityTracker";
 import AuthenticatedLayout from "@/Layouts/Student/AuthenticatedLayout";
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { Head, usePage } from "@inertiajs/react";
 import { toast } from "react-toastify";

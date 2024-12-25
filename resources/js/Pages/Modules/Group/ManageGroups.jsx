@@ -226,7 +226,10 @@ export default function ManageGroups() {
                     );
 
                     return (
-                        <div className="group-card gap-2 flex text-gray-700 dark:text-gray-300 items-start bg-slate-300 dark:bg-slate-900 p-6 rounded-lg">
+                        <div
+                            key={"group-card-" + group.id}
+                            className="group-card gap-2 flex text-gray-700 dark:text-gray-300 items-start bg-slate-300 dark:bg-slate-900 p-6 rounded-lg"
+                        >
                             <img
                                 className="w-[50px] rounded-full"
                                 src={getGroupIconURL(

@@ -2,6 +2,7 @@
 import { baseURL } from "@/Env";
 import ActivityBox from "./ActivityBox";
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { toast } from "react-toastify";
 
 export default function StudentActivityTracker({

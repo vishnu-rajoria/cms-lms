@@ -1,6 +1,7 @@
 import { baseURL } from "@/Env";
 import { useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/Admin/AuthenticatedLayout";
+import axios from "axios";
 import { Head, Link } from "@inertiajs/react";
 import PrimaryButton from "@/Components/PrimaryButton";
 import Loading from "@/Components/Loading";

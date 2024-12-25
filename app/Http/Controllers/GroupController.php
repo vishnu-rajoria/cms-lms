@@ -90,12 +90,12 @@ class GroupController extends Controller
                 foreach($groupsRecordsFromDB as $group)
                 {
                     $groupDetails = [];
-                 $arrayGroup = $group->toArray(); // Convert the object to an array
-                 $groupDetails['id'] = $arrayGroup['id'];
-                 $groupDetails['name'] = $arrayGroup['name'];
-                 $groupDetails['group_icon'] = $arrayGroup['group_icon'];
-                 $groupDetails['description'] = $arrayGroup['description'];
-                 $groupDetails['created_at'] = $arrayGroup['created_at'];
+                    $arrayGroup = $group->toArray(); // Convert the object to an array
+                    $groupDetails['id'] = $arrayGroup['id'];
+                    $groupDetails['name'] = $arrayGroup['name'];
+                    $groupDetails['group_icon'] = $arrayGroup['group_icon'];
+                    $groupDetails['description'] = $arrayGroup['description'];
+                    $groupDetails['created_at'] = $arrayGroup['created_at'];
               
                  $membersIdRaw = StudentsOfGroup::where(['group_id'=>$group->id])->select('user_id')->get()->toArray();
                  $membersId = array();

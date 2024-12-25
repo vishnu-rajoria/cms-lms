@@ -5,10 +5,12 @@ export default function ActivityBox({
     attendanceInfo,
     ...props
 }) {
-    let colorClasses = "bg-slate-600 text-slate-400";
+    let colorClasses =
+        "bg-slate-900 text-white dark:bg-slate-600 dark:text-slate-400";
     let dayName = getDayName(date);
     if (dayName === "Saturday" || dayName === "Sunday") {
-        colorClasses = "bg-slate-800 text-white";
+        colorClasses =
+            "bg-slate-300 text-slate-400  dark:bg-slate-800 dark:text-white";
     }
     if (attendanceInfo) {
         colorClasses = attendanceInfo.is_present

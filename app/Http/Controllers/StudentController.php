@@ -55,47 +55,41 @@ class StudentController extends Controller
         return response()->json(["studentAttendance"=>$studentAttendanceFormatted]);
     }
 
-    public function getStudents($group=null)
+    public function getStudents($groupId=null)
     {
         // return response()->json(["students"=>User::where(['role_id' => 3])->get()]);
         // return response()->json(["students"=>User::with('studentDetails')->where(['role_id' => 3])->get()]);
-       
-        if($group == null)
+        if($groupId == null)
         {
-              // Query select() must include the primary key of main tables and foreign key of related tables
-              $studentsRecordsFromDB = User::query()->select('id','name','email')->with(['studentDetails'=>function($query){
-                $query->select('user_id','fname','course','profile_pic','doj');
-            }])->where(['role_id' => 3])->orderByDesc('created_at')->get();
-            $studentsRecords = [];
-
-            // dd($studentsRecordsFromDB);
            
-            foreach($studentsRecordsFromDB as $student)
-            {
-                $arrayStudent = $student->toArray(); // Convert the object to an array
-               
-                if(isset($arrayStudent['student_details']))
-                {
-                    $mergedArray=array_merge($arrayStudent,$arrayStudent['student_details']); // Merge the arrays
-                    unset($mergedArray['user_id']);
-                    unset($mergedArray['student_details']); // Remove the 'student_details' key
-                    $studentsRecords[] = $mergedArray;
-                }
-                
-            }
-        }
-        else{
+        // return an error/exception with status
+        return response()->json(["error"=>"No group selected"], 400);
 
-            $studentIdRecords = StudentsOfGroup::where(['group_id'=>$group])->select('user_id')->get()->toArray();
-            $selectedStudentsId = [];
-            foreach($studentIdRecords as $record)
-            {
-                $selectedStudentsId[] = $record['user_id'];
-            }
+        }
+        else
+        {
             
-            $studentsRecordsFromDB = User::query()->select('id','name','email')->with(['studentDetails'=>function($query){
-                $query->select('user_id','fname','course','profile_pic','doj');
-            }])->where(['role_id' => 3])->whereIn('id',$selectedStudentsId)->orderByDesc('created_at')->get();
+            if($groupId == "all")
+            {
+                $studentsRecordsFromDB = User::query()->select('id','name','email')->with(['studentDetails'=>function($query){
+                    $query->select('user_id','fname','course','profile_pic','doj');
+                }])->where(['role_id' => 3])->orderByDesc('created_at')->get();
+            }
+            else
+            {
+                $studentIdRecords = StudentsOfGroup::where(['group_id'=>$groupId])->select('user_id')->get()->toArray();
+                $selectedStudentsId = [];
+                foreach($studentIdRecords as $record)
+                {
+                    $selectedStudentsId[] = $record['user_id'];
+                }
+                
+                $studentsRecordsFromDB = User::query()->select('id','name','email')->with(['studentDetails'=>function($query){
+                    $query->select('user_id','fname','course','profile_pic','doj');
+                }])->where(['role_id' => 3])->whereIn('id',$selectedStudentsId)->orderByDesc('created_at')->get();
+            }
+              
+
             $studentsRecords = [];
 
             // dd($studentsRecordsFromDB);
@@ -114,6 +108,27 @@ class StudentController extends Controller
                 
             }
         }
+        // else{
+
+            
+        //     $studentsRecords = [];
+
+        //     // dd($studentsRecordsFromDB);
+           
+        //     foreach($studentsRecordsFromDB as $student)
+        //     {
+        //         $arrayStudent = $student->toArray(); // Convert the object to an array
+               
+        //         if(isset($arrayStudent['student_details']))
+        //         {
+        //             $mergedArray=array_merge($arrayStudent,$arrayStudent['student_details']); // Merge the arrays
+        //             unset($mergedArray['user_id']);
+        //             unset($mergedArray['student_details']); // Remove the 'student_details' key
+        //             $studentsRecords[] = $mergedArray;
+        //         }
+                
+        //     }
+        // }
         
         return response()->json(["students"=>$studentsRecords]);
     }

@@ -5,7 +5,7 @@
 // The progress object is used to set the color of the progress bar
 
 import "../css/app.css";
-import "./bootstrap";
+// import "./bootstrap";
 
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";

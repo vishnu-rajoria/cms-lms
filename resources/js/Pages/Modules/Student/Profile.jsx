@@ -39,6 +39,9 @@ export default function ManageStudents({ studentId }) {
             });
     }
 
+    function displayChangeProfilePictureForm() {
+        alert("Change profile picture");
+    }
     useEffect(() => {
         getStudentDetails(studentId);
     }, []);
@@ -53,7 +56,7 @@ export default function ManageStudents({ studentId }) {
                         className="btn"
                         href={baseURL + "/admin/register-student"}
                     >
-                        Edit
+                        Edit Profile
                     </Link>
                 </div>
             }
@@ -67,20 +70,39 @@ export default function ManageStudents({ studentId }) {
                     {groups.length > 0 &&
                         Object.keys(studentDetails).length && (
                             <>
-                                <div className="student-details-container grid grid-cols-[auto,1fr] gap-4 items-center">
-                                    <img
-                                        className="rounded-full border-4 border-gray-200 w-[150px] h-[150px] object-cover"
-                                        src={getStudentImageURL(
-                                            studentDetails.id,
-                                            studentDetails.student_details
-                                                .profile_pic
-                                        )}
-                                    />
-                                    <div>
-                                        <h2 className="text-xl text-green-300">
+                                <div className="student-details-container grid md:grid-cols-[auto,auto]  gap-4 items-center  sm:justify-start">
+                                    <div
+                                        className="relative rounded-full border-4 cursor-pointer border-gray-200 w-[150px] h-[150px] max-w-[150px] max-h-[150px] overflow-hidden"
+                                        onClick={() => {
+                                            displayChangeProfilePictureForm();
+                                        }}
+                                    >
+                                        <img
+                                            title="click to change profile picture"
+                                            className="object-cover"
+                                            src={getStudentImageURL(
+                                                studentDetails.id,
+                                                studentDetails.student_details
+                                                    .profile_pic
+                                            )}
+                                        />
+                                        <div className="message text-center text-white absolute top-0 left-0 bg-black bg-opacity-50 w-full h-full grid place-content-center p-6 hover:opacity-100 opacity-0 transition-all ">
+                                            Change Profile Pic
+                                        </div>
+                                    </div>
+                                    <div className="student-details ">
+                                        <h2 className="relative text-xl font-bold text-gray-900 dark:text-green-300 flex justify-start gap-2 group">
                                             {studentDetails.name}
+                                            <button className="btn btn-sm btn-primary edit-btn hidden group-hover:block cursor-pointer text-sm">
+                                                change
+                                            </button>
                                         </h2>
-                                        <h3>{studentDetails.email}</h3>
+                                        <h3 className="group flex justify-start gap-2">
+                                            {studentDetails.email}
+                                            <button className="btn btn-sm btn-primary edit-btn hidden group-hover:block cursor-pointer text-sm">
+                                                change
+                                            </button>
+                                        </h3>
                                         <div>
                                             Date of Joining :
                                             {formattedMysqlDateAndTime(
@@ -88,12 +110,12 @@ export default function ManageStudents({ studentId }) {
                                                     .doj
                                             )}
                                         </div>
-                                        <div>
+                                        {/* <div>
                                             {
                                                 studentDetails.student_details
                                                     .school_college
                                             }
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                                 {groups.map((group, index) => {
@@ -104,7 +126,7 @@ export default function ManageStudents({ studentId }) {
                                                 index
                                             }
                                         >
-                                            <h3 className="text-xl text-green-300 pt-6">
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-green-300 pt-6">
                                                 Group {group.group_id}
                                             </h3>
                                             <StudentActivityTracker
