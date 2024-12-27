@@ -35,6 +35,8 @@ export default function StudentsTable({ groupId }) {
     const [showAssignStudentToGroupForm, setShowAssignStudentToGroupForm] =
         useState(false);
 
+    
+
     function recoverPreviouslySelectedStudentGroupOption() {
         let previouslySavedStudentsGroupOption = localStorage.getItem(
             "currentlySelectedStudentGroupOption"

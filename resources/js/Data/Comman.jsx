@@ -14,13 +14,7 @@ export const profilePicFormFields = {
             isInvalid: false,
             message: "",
         },
-        label: (
-            <>
-                Select{" "}
-                <b className="text-lg dark:text-orange-300 ">Profile Picture</b>{" "}
-                image, click to select a file
-            </>
-        ),
+        label: `Select Profile Picture to upload`,
     },
 };
 
@@ -44,13 +38,7 @@ export const signaturePicFormFields = {
             isInvalid: false,
             message: "",
         },
-        label: (
-            <>
-                Select{" "}
-                <b className="text-lg dark:text-orange-300 ">Signature Image</b>
-                , click to select a file
-            </>
-        ),
+        label: `Select Profile Picture to upload`,
     },
 };
 export const permanentAddressFormFields = {
@@ -86,9 +74,27 @@ export const permanentAddressFormFields = {
     },
     permanent_address_city: {
         label: "City",
-        type: "text",
-        value: "",
-        validatorRules: ["notEmpty", "minLength|2"],
+        type: "select",
+        options: [
+            {
+                text: "Sikar",
+                value: "4",
+            },
+            {
+                text: "Churu",
+                value: "1",
+            },
+            {
+                text: "Jhunjhunu",
+                value: "2",
+            },
+            {
+                text: "Deedwana",
+                value: "3",
+            },
+        ],
+        value: "4",
+        // validatorRules: ["notEmpty", "minLength|2"],
         fieldValidationStatus: {
             isInvalid: false,
             message: "",
@@ -96,9 +102,18 @@ export const permanentAddressFormFields = {
     },
     permanent_address_state: {
         label: "State",
-        type: "text",
-        value: "",
-        validatorRules: ["notEmpty", "minLength|2"],
+        type: "select",
+        options: [
+            {
+                text: "Rajasthan",
+                value: "1",
+            },
+            {
+                text: "Haryana",
+                value: "2",
+            },
+        ],
+        value: "1",
         fieldValidationStatus: {
             isInvalid: false,
             message: "",
@@ -149,9 +164,26 @@ export const currentAddressFormFields = {
     },
     current_address_city: {
         label: "City",
-        type: "text",
-        value: "",
-        validatorRules: ["notEmpty", "minLength|3"],
+        type: "select",
+        options: [
+            {
+                text: "Sikar",
+                value: "4",
+            },
+            {
+                text: "Churu",
+                value: "1",
+            },
+            {
+                text: "Jhunjhunu",
+                value: "2",
+            },
+            {
+                text: "Deedwana",
+                value: "3",
+            },
+        ],
+        value: "4",
         fieldValidationStatus: {
             isInvalid: false,
             message: "",
@@ -159,9 +191,18 @@ export const currentAddressFormFields = {
     },
     current_address_state: {
         label: "State",
-        type: "text",
-        value: "",
-        validatorRules: ["notEmpty", "minLength|3"],
+        type: "select",
+        options: [
+            {
+                text: "Rajasthan",
+                value: "1",
+            },
+            {
+                text: "Haryana",
+                value: "2",
+            },
+        ],
+        value: "1",
         fieldValidationStatus: {
             isInvalid: false,
             message: "",

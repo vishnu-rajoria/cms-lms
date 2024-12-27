@@ -81,6 +81,7 @@ export function getFormFieldsJSX(
                 case "password":
                 case "date":
                 case "email":
+                case "number":
                     return (
                         <div key={"input-field-container-" + key}>
                             <InputLabel htmlFor={key} value={formField.label} />
@@ -173,6 +174,10 @@ export function getFormFieldsJSX(
                             className="relative"
                             key={"input-field-container-" + key}
                         >
+                            <InputLabel
+                                htmlFor={key}
+                                value={formField.label}
+                            ></InputLabel>
                             <FileUploadInput
                                 type={formField.type}
                                 text={formField.label}

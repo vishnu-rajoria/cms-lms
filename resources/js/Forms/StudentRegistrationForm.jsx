@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { getFormFieldsJSX } from "@/Helpers/FormHelper";
 
 export default function StudentRegistrationForm({
@@ -57,7 +57,7 @@ export default function StudentRegistrationForm({
                 <div className="address-inputs grid md:grid-cols-[1fr,1fr] gap-5">
                     <div className="address-fields-container p-2 py-8 grid gap-4 bg-gray-100 dark:bg-slate-700 rounded-md">
                         <h3 className="text-lg text-bold">Permanent Address</h3>
-                        <div>
+                        <div className="grid gap-2">
                             {getFormFieldsJSX(
                                 formData.permanentAddressFormFieldsData,
                                 {

@@ -84,7 +84,7 @@ export default function FileUploadInput(props) {
     }, [files]);
 
     return (
-        <section className="container">
+        <section className="container my-1">
             {/* Dropzone area */}
 
             <div {...getRootProps({ className: "dropzone" })}>

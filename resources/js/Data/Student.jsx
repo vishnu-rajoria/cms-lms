@@ -192,21 +192,21 @@ export const studentRegistrationFormFields = {
     },
     course: {
         label: "Course",
-        value: "1",
+        value: "2",
         type: "select",
         options: [
-            {
-                value: "1",
-                text: "Full Stack Web Development",
-            },
-            {
-                value: "2",
-                text: "Web Design",
-            },
-            {
-                value: "3",
-                text: "Python",
-            },
+            // {
+            //     value: "1",
+            //     text: "Web Design",
+            // },
+            // {
+            //     value: "2",
+            //     text: "Full Stack Web Development",
+            // },
+            // {
+            //     value: "3",
+            //     text: "Python",
+            // },
         ],
         validatorRules: [],
         fieldValidationStatus: {
@@ -234,11 +234,60 @@ export const studentRegistrationFormFields = {
             message: "",
         },
     },
+    mobile_number_1: {
+        label: "Mobile Number 1st",
+        type: "text",
+        value: "",
+        validatorRules: ["notEmpty", "minLength|10"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    mobile_number_2: {
+        label: "Mobile Number 2nd",
+        type: "text",
+        value: "",
+        validatorRules: ["notRequired", "minLength|10"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    portfolio_link: {
+        label: "Portfolio Link",
+        type: "text",
+        value: "",
+        validatorRules: ["notRequired", "minLength|5"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    concession: {
+        label: "Concession",
+        type: "number",
+        value: "0",
+        validatorRules: ["notRequired", "min|0", "max|10000"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    amount_paid: {
+        label: "Amount paid",
+        type: "number",
+        value: "0",
+        validatorRules: ["notRequired", "min|1000", "max|100000"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
 };
 
 // configurations for students attendance form fields
 
-// Configuration for student registration form fields
 export let studentAttendanceStatusFormField = {
     "is_present[]": {
         label: "",

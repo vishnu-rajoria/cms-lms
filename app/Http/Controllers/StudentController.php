@@ -72,7 +72,7 @@ class StudentController extends Controller
             if($groupId == "all")
             {
                 $studentsRecordsFromDB = User::query()->select('id','name','email')->with(['studentDetails'=>function($query){
-                    $query->select('user_id','fname','course','profile_pic','doj');
+                    $query->select('user_id','fname','course_id','profile_pic','doj');
                 }])->where(['role_id' => 3])->orderByDesc('created_at')->get();
             }
             else
@@ -85,7 +85,7 @@ class StudentController extends Controller
                 }
                 
                 $studentsRecordsFromDB = User::query()->select('id','name','email')->with(['studentDetails'=>function($query){
-                    $query->select('user_id','fname','course','profile_pic','doj');
+                    $query->select('user_id','fname','course_id','profile_pic','doj');
                 }])->where(['role_id' => 3])->whereIn('id',$selectedStudentsId)->orderByDesc('created_at')->get();
             }
               

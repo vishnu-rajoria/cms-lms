@@ -24,6 +24,9 @@ return new class extends Migration
             $table->foreignId('created_by_id')->constrained(
                 table: 'users',
             );
+            $table->boolean("is_record_update_remaining")->default(false);
+            $table->timestamps();
+            $table->softDeletes('deleted_at',precision:0);
         });
     }
 

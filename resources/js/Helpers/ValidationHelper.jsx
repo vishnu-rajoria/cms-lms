@@ -84,6 +84,7 @@ export function validateField(validatorRules, value) {
     //* isFieldInvalid:boolearn --> to tell if this field is invalid or not
     let fieldErrors = [];
     let isFieldInvalid = false;
+    let notEmpty = false;
     let fieldNotRequired = true;
 
     //ValidationRules:array|string -->["rule1","rule2",...]
@@ -91,6 +92,7 @@ export function validateField(validatorRules, value) {
 
     if (validatorRules) {
         fieldNotRequired = validatorRules.includes("notRequired");
+        notEmpty = validatorRules.includes("notEmpty");
         //validate the given value against each rules
         validatorRules.forEach((ruleString) => {
             //saperate the rule and value form the string
@@ -109,10 +111,30 @@ export function validateField(validatorRules, value) {
                     break;
                 case "minLength":
                     if (value.length < parseInt(ruleValue)) {
+                        if (fieldNotRequired && value.length > 0) {
+                            isFieldInvalid = true;
+                            fieldErrors.push(
+                                `should have at least ${ruleValue} characters`
+                            );
+                        }
+                    }
+                    if (notEmpty && value.length < parseInt(ruleValue)) {
                         isFieldInvalid = true;
                         fieldErrors.push(
-                            `should have at least ${ruleValue} characters`
+                            `At shoud have at least ${ruleValue} characters`
                         );
+                    }
+                    break;
+                case "min":
+                    if (parseInt(value) < parseInt(ruleValue) || value === "") {
+                        isFieldInvalid = true;
+                        fieldErrors.push(`The minimum value is ${ruleValue}`);
+                    }
+                    break;
+                case "max":
+                    if (parseInt(value) > parseInt(ruleValue)) {
+                        isFieldInvalid = true;
+                        fieldErrors.push(`The maximum value is ${ruleValue}`);
                     }
                     break;
                 case "validDate":

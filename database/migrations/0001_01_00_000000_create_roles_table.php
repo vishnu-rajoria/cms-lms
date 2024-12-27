@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groups', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name',50);
-            $table->string('group_icon')->nullable();
-            $table->string('description')->nullable();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('image')->nullable();
+            $table->boolean('is_active')->default(false);
+            $table->integer('created_by_user_id')->nullable();
             $table->boolean("is_record_update_remaining")->default(false);
             $table->timestamps();
-            $table->softDeletes('deleted_at',precision:0);
+            $table->softDeletes('deleted_at',0);
         });
     }
 
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('groups');
+        Schema::dropIfExists('roles');
     }
 };

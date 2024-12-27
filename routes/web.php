@@ -6,6 +6,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AccessController;
+use App\Http\Controllers\CourseController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -49,16 +50,22 @@ Route::prefix("group")->middleware(['auth', 'verified','verify.access.control'])
 
 Route::prefix("api")->middleware(['auth', 'verified','verify.access.control'])->group(function(){
 
+    // API for course module
+        Route::get('/get-courses',[CourseController::class,"getCourses"])->name("api.get.courses");
+
+    // API for students module
         Route::get('/get-students/{group_id?}',[StudentController::class,"getStudents"])->name("api.get.students");
         
         Route::get('/get-student-details/{student_id?}',[StudentController::class,"getStudentDetails"])->name("api.get.student.details");
+        
         Route::get('/get-group-student-attendance/{user_id}/{group_id}',[StudentController::class,"getGroupStudentAttendance"])->name("api.get.group.student.attendance");
 
-        
         Route::post('/save-student',[StudentController::class,'save'])->name('api.save.student');
             
         Route::post('/save-students-attendance',[StudentController::class,'saveStudentsAttendance'])->name('api.save.students.attendance');
-            
+    
+    // API for group module
+
         Route::get('/get-groups',[GroupController::class,"getGroups"])->name("api.get.groups");
      
         Route::post('/save-group',[GroupController::class,'saveStudentGroup'])->name('api.save.group');

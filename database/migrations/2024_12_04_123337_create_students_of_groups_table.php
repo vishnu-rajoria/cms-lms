@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('group_id')->constrained();
             $table->foreignId('user_id')->constrained();
+            $table->boolean("is_record_update_remaining")->default(false);
             $table->timestamps();
             $table->softDeletes('deleted_at',precision:0);
         });

@@ -24,15 +24,19 @@ import {
     getFormValidationStatus,
     clearFormHandler,
 } from "@/Helpers/FormHelper";
+import { getCourses } from "@/Helpers/CoursesRequestHelper";
 
 const baseURL = import.meta.env.VITE_APP_URL;
 
 export default function StudentRegistrationByAdmin() {
     // The state variable formData stores all the fields of the student registration form.
+    const [courses, setCourses] = useState([]);
+
     const [
         studentRegistrationFormFieldsData,
         setStudentRegistrationFormFieldsData,
     ] = useState(JSON.parse(JSON.stringify(studentRegistrationFormFields)));
+    studentRegistrationFormFieldsData["course"].options = courses;
 
     const [permanentAddressFormFieldsData, setPermanentAddressFormFieldsData] =
         useState(JSON.parse(JSON.stringify(permanentAddressFormFields)));
@@ -79,6 +83,7 @@ export default function StudentRegistrationByAdmin() {
             originalData: JSON.parse(JSON.stringify(signaturePicFormFields)),
         },
     };
+
     attachEventListenersToAllFormFieldsGroup();
     function attachEventListenersToAllFormFieldsGroup() {
         Object.keys(allFormFieldsGroup).forEach((key) => {
@@ -211,11 +216,25 @@ export default function StudentRegistrationByAdmin() {
         dataSetterMethod(newDataFieldsGroup);
     }
 
-    // useEffect(() => {
-    //     console.log("all form fields inside he useeffect");
-    //     console.log(allFormFieldsGroup);
+    useEffect(() => {
+        let getCourseRequest = getCourses();
+        getCourseRequest.then((response) => {
+            console.log(response);
 
-    // }, []);
+            console.log("the following data has been set to courses");
+            console.log(response.data);
+
+            let courseSelectorOptions = response.data.map((course) => {
+                return {
+                    value: course.id + "",
+                    text: course.name,
+                };
+            });
+            console.log(courseSelectorOptions);
+
+            setCourses(courseSelectorOptions);
+        });
+    }, []);
 
     return (
         <AuthenticatedLayout
