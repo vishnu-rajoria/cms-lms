@@ -10,6 +10,4 @@ class StudentsOfGroup extends Model
     protected $table = "students_of_groups";
     // nothing to be guared | all fields are mass assignable
     protected $guarded = [];
-
-  
 }

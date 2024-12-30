@@ -5,13 +5,18 @@ import AuthenticatedLayout from "@/Layouts/Admin/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { formatDistance, formatISO } from "date-fns";
+import { formatDistance, formatISO, set } from "date-fns";
 import axios from "axios";
 import { formattedMysqlDateAndTime } from "@/Helpers/TimeHelper";
+import TextInput from "@/Components/TextInput";
+import Modal from "@/Components/Modal";
+import StudentFeeHistory from "./StudentFeeHistory";
 export default function ManageStudents({ studentId }) {
     const [studentDetails, setStudentDetails] = useState({});
     const [groups, setGroups] = useState([]);
-
+    const [showModal, setShowModal] = useState(false);
+    const [showFeesHistory, setShowFeesHistory] = useState(false);
+    const [studentFeeHistoryData, setStudentFeeHistoryData] = useState([]);
     function getStudentDetails(studentId) {
         // Display a loading toast message at the bottom-right
         const toastId = toast.loading("loading data...", {
@@ -28,6 +33,7 @@ export default function ManageStudents({ studentId }) {
                 });
                 setStudentDetails(response.data.studentDetails);
                 setGroups(response.data.groups);
+                getStudentFeeHistory(studentId);
             })
             .catch(function (error) {
                 toast.update(toastId, {
@@ -39,8 +45,23 @@ export default function ManageStudents({ studentId }) {
             });
     }
 
+    function getStudentFeeHistory(studentId) {
+        axios
+            .get(baseURL + "/api/get-student-fees-history/" + studentId)
+            .then(function (response) {
+                setStudentFeeHistoryData(response.data.studentFeeHistory);
+            })
+            .catch(function (error) {
+                alert(error);
+            });
+    }
+
     function displayChangeProfilePictureForm() {
         alert("Change profile picture");
+    }
+
+    function studentFeeSaveSuccessHandler() {
+        getStudentFeeHistory(studentId);
     }
     useEffect(() => {
         getStudentDetails(studentId);
@@ -63,16 +84,26 @@ export default function ManageStudents({ studentId }) {
         >
             <Head title="Student Profile" />
 
-            <div className="overflow-hidden bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
-                <div className="p-6 text-gray-400">
-                    {/* {JSON.stringify(studentDetails)} */}
+            <Modal show={showModal} onClose={() => setShowModal(false)}>
+                <div className="p-6">
+                    <StudentFeeHistory
+                        studentId={studentId}
+                        studentFeeHistoryData={studentFeeHistoryData}
+                        studentFeeSaveSuccessHandler={
+                            studentFeeSaveSuccessHandler
+                        }
+                    />
+                </div>
+            </Modal>
 
-                    {groups.length > 0 &&
-                        Object.keys(studentDetails).length && (
+            {Object.keys(studentDetails).length > 0 && (
+                <div className="overflow-hidden bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
+                    <div className="p-6 text-gray-400">
+                        {
                             <>
-                                <div className="student-details-container grid md:grid-cols-[auto,auto]  gap-4 items-center  sm:justify-start">
+                                <div className="student-details-container md:flex flex-cols-3  gap-4 items-start  sm:justify-start">
                                     <div
-                                        className="relative rounded-full border-4 cursor-pointer border-gray-200 w-[150px] h-[150px] max-w-[150px] max-h-[150px] overflow-hidden"
+                                        className="relative rounded-full border-4 cursor-pointer border-gray-200 w-[150px] h-[150px] max-w-[150px] max-h-[150px] overflow-hidden "
                                         onClick={() => {
                                             displayChangeProfilePictureForm();
                                         }}
@@ -90,7 +121,7 @@ export default function ManageStudents({ studentId }) {
                                             Change Profile Pic
                                         </div>
                                     </div>
-                                    <div className="student-details ">
+                                    <div className="student-details">
                                         <h2 className="relative text-xl font-bold text-gray-900 dark:text-green-300 flex justify-start gap-2 group">
                                             {studentDetails.name}
                                             <button className="btn btn-sm btn-primary edit-btn hidden group-hover:block cursor-pointer text-sm">
@@ -150,14 +181,88 @@ export default function ManageStudents({ studentId }) {
                                                     .doj
                                             )}
                                         </div>
-                                        {/* <div>
-                                            {
-                                                studentDetails.student_details
-                                                    .school_college
-                                            }
-                                        </div> */}
+                                        <div class="flex gap-2 items-center">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="w-[20px] h-[20px] "
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                            >
+                                                <path
+                                                    d="M6 4H10.5M10.5 4C12.9853 4 15 6.01472 15 8.5C15 10.9853 12.9853 13 10.5 13H6L13 20M10.5 4H18M6 8.5H18"
+                                                    stroke="#0f0"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                />
+                                                <script xmlns="" />
+                                            </svg>
+                                            Paid
+                                            <TextInput
+                                                className="border-0 shadow-none"
+                                                type="password"
+                                                label="Course Fee"
+                                                value={
+                                                    studentDetails
+                                                        .student_details
+                                                        .amount_paid + "     "
+                                                }
+                                                disabled
+                                            ></TextInput>
+                                        </div>
+                                        <div class="flex gap-2 items-center">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="w-[20px] h-[20px] "
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                            >
+                                                <path
+                                                    d="M6 4H10.5M10.5 4C12.9853 4 15 6.01472 15 8.5C15 10.9853 12.9853 13 10.5 13H6L13 20M10.5 4H18M6 8.5H18"
+                                                    stroke="#0f0"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                />
+                                                <script xmlns="" />
+                                            </svg>
+                                            Remaining
+                                            <TextInput
+                                                className="border-0 shadow-none"
+                                                type="password"
+                                                value={
+                                                    studentDetails
+                                                        .student_details
+                                                        .course_fee_amount -
+                                                    studentDetails
+                                                        .student_details
+                                                        .amount_paid -
+                                                    studentDetails
+                                                        .student_details
+                                                        .course_fee_concession +
+                                                    "    "
+                                                }
+                                                disabled
+                                            ></TextInput>
+                                        </div>
+                                    </div>
+                                    <div className="ms-auto">
+                                        <button
+                                            // href={route(
+                                            //     "student.fees.history",
+                                            //     studentDetails.id
+                                            // )}
+                                            onClick={() => {
+                                                setShowModal(true);
+                                                setShowFeesHistory(true);
+                                            }}
+                                            className="btn btn-link"
+                                        >
+                                            Fee Payment history
+                                        </button>
                                     </div>
                                 </div>
+
                                 {groups.map((group, index) => {
                                     return (
                                         <div
@@ -167,11 +272,11 @@ export default function ManageStudents({ studentId }) {
                                             }
                                         >
                                             <h3 className="text-xl font-bold text-gray-900 dark:text-green-300 pt-6">
-                                                Group {group.group_id}
+                                                {group.name}
                                             </h3>
                                             <StudentActivityTracker
                                                 studentId={studentId}
-                                                groupId={group.group_id}
+                                                groupId={group.id}
                                                 startingDate={
                                                     studentDetails
                                                         .student_details.doj
@@ -181,9 +286,10 @@ export default function ManageStudents({ studentId }) {
                                     );
                                 })}
                             </>
-                        )}
+                        }
+                    </div>
                 </div>
-            </div>
+            )}
         </AuthenticatedLayout>
     );
 }

@@ -9,7 +9,6 @@ import { CreateDarkTableTheme } from "@/Helpers/ThemeHelper";
 import { studentsTableColumnsMini } from "@/Data/Student";
 import GroupRegistrationForm from "@/Forms/GroupRegistrationForm";
 import AssignStudentToGroupForm from "@/Forms/AssignStudentToGroupForm";
-
 CreateDarkTableTheme();
 
 export default function StudentsTable({ groupId }) {
@@ -34,8 +33,6 @@ export default function StudentsTable({ groupId }) {
         useState(false);
     const [showAssignStudentToGroupForm, setShowAssignStudentToGroupForm] =
         useState(false);
-
-    
 
     function recoverPreviouslySelectedStudentGroupOption() {
         let previouslySavedStudentsGroupOption = localStorage.getItem(

@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('roles')->insert([
-            'id' => 2,            
+            'id' => 2,
             'name' => 'teacher',
             'created_by_user_id' => 1
 
@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@example.com',
-            'role_id' => 1. 
+            'role_id' => 1.
         ]);
         User::factory()->create([
             'name' => 'Teacher',
@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Student',
             'email' => 'student@example.com',
-            'role_id' => 3 
+            'role_id' => 3
         ]);
 
         DB::table('courses')->insert([
@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
             'created_by_user_id' => 1,
         ]);
 
-    
+
         $data = [
             [
                 'id' => 1,

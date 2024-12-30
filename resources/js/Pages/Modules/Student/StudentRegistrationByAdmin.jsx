@@ -36,7 +36,7 @@ export default function StudentRegistrationByAdmin() {
         studentRegistrationFormFieldsData,
         setStudentRegistrationFormFieldsData,
     ] = useState(JSON.parse(JSON.stringify(studentRegistrationFormFields)));
-    studentRegistrationFormFieldsData["course"].options = courses;
+    studentRegistrationFormFieldsData["course_id"].options = courses;
 
     const [permanentAddressFormFieldsData, setPermanentAddressFormFieldsData] =
         useState(JSON.parse(JSON.stringify(permanentAddressFormFields)));

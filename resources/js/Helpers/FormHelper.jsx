@@ -302,7 +302,10 @@ export function updatedValidationStatus(
 }
 
 export function clearFormHandler(e = null, allFormFieldsGroup) {
-    e.preventDefault();
+    if (e !== null) {
+        e.preventDefault();
+    }
+
     // console.log("Clearing the form now");
     // console.log(allFormFieldsGroup);
 

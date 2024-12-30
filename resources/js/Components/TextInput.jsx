@@ -58,12 +58,13 @@ export default forwardRef(function TextInput(
         );
     } else {
         return (
-            <div className="relative">
+            <div className="relative w-full">
                 <input
                     {...props}
                     type={fieldType}
                     className={
-                        "rounded-md border-gray-300 dark:border-none shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-900 dark:[color-scheme:dark] text-gray-400  " +
+                        "rounded-md border-gray-300 dark:border-none shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-900 dark:[color-scheme:dark] text-gray-400   " +
+                        " " +
                         className
                     }
                     ref={localRef}

@@ -34,13 +34,13 @@ export default function AuthenticatedLayout({ header, children }) {
                             <div className="ms-6 flex items-center">
                                 <Breather />
                                 <ThemeSwitcher />
-                                <div className="relative ms-3 z-[100] ">
+                                <div className="relative ms-3 z-[10] ">
                                     <Dropdown>
                                         <Dropdown.Trigger>
-                                            <span className="inline-flex rounded-md">
+                                            <span className="inline-flex rounded-md ">
                                                 <button
                                                     type="button"
-                                                    className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                                    className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none z-[10]"
                                                 >
                                                     {user.name}
 

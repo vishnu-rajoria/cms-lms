@@ -46,8 +46,8 @@ export const studentsTableColumnsMini = [
     {
         name: "Course",
         selector: (row, index) => {
-            switch (row.course) {
-                case 1:
+            switch (row.course_id) {
+                case 2:
                     return (
                         <Badge
                             title="Full Stack Web Development"
@@ -57,7 +57,7 @@ export const studentsTableColumnsMini = [
                         </Badge>
                     );
                     break;
-                case 2:
+                case 1:
                     return (
                         <Badge
                             className="border border-orange-500 dark:text-yellow-400 dark:bg-orange-800
@@ -190,24 +190,11 @@ export const studentRegistrationFormFields = {
             message: "",
         },
     },
-    course: {
+    course_id: {
         label: "Course",
         value: "2",
         type: "select",
-        options: [
-            // {
-            //     value: "1",
-            //     text: "Web Design",
-            // },
-            // {
-            //     value: "2",
-            //     text: "Full Stack Web Development",
-            // },
-            // {
-            //     value: "3",
-            //     text: "Python",
-            // },
-        ],
+        options: [],
         validatorRules: [],
         fieldValidationStatus: {
             isInvalid: false,
@@ -264,7 +251,7 @@ export const studentRegistrationFormFields = {
             message: "",
         },
     },
-    concession: {
+    course_fee_concession: {
         label: "Concession",
         type: "number",
         value: "0",
@@ -283,6 +270,152 @@ export const studentRegistrationFormFields = {
             isInvalid: false,
             message: "",
         },
+    },
+    transaction_serial_number: {
+        label: "Transaction Serial Number",
+        type: "text",
+        value: "",
+        validatorRules: ["notRequired"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    module_name: {
+        label: "",
+        type: "hidden",
+        value: "student-fee",
+        validatorRules: ["notRequired"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    transaction_mode: {
+        label: "Transaction mode",
+        type: "select",
+        value: "cash",
+        options: [
+            { text: "Card", value: "card" },
+            { text: "Internet banking", value: "intb" },
+            { text: "Neft", value: "neft" },
+            { text: "RTGS", value: "rtgs" },
+            { text: "UPI", value: "upi" },
+            { text: "Cash", value: "cash" },
+            { text: "Cheque", value: "chq" },
+            { text: "Demand Draf", value: "dd" },
+            { text: "Other", value: "other" },
+        ],
+        validatorRules: ["notRequired"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    fees_remarks: {
+        label: "Fees remarks",
+        type: "textarea",
+        value: "",
+        validatorRules: ["notRequired"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+};
+
+export const studentFeeFormFields = {
+    payment_date: {
+        label: "Date of payment",
+        type: "date",
+        value: new Date().toISOString().slice(0, 10),
+        validatorRules: ["notEmpty", "validDate"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    amount_paid: {
+        label: "Amount paid",
+        type: "number",
+        value: "0",
+        validatorRules: ["notRequired", "min|1000", "max|100000"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    transaction_serial_number: {
+        label: "Transaction Serial Number",
+        type: "text",
+        value: "",
+        validatorRules: ["notRequired"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    module_name: {
+        label: "",
+        type: "hidden",
+        value: "student-fee",
+        validatorRules: ["notRequired"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    transaction_mode: {
+        label: "Transaction mode",
+        type: "select",
+        value: "cash",
+        options: [
+            { text: "Card", value: "card" },
+            { text: "Internet banking", value: "intb" },
+            { text: "Neft", value: "neft" },
+            { text: "RTGS", value: "rtgs" },
+            { text: "UPI", value: "upi" },
+            { text: "Cash", value: "cash" },
+            { text: "Cheque", value: "chq" },
+            { text: "Demand Draf", value: "dd" },
+            { text: "Other", value: "other" },
+        ],
+        validatorRules: ["notRequired"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    fees_remarks: {
+        label: "Fees remarks",
+        type: "textarea",
+        value: "",
+        validatorRules: ["notRequired"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    "student_fee_payment_pic[]": {
+        value: [
+            // {
+            //     preview:
+            //         "http://localhost/cslab-app/cms/public/storage/students/22/profile_pictures/kma2JMUvkzF4ujbO9QrKuEwIYYMKyi72y0vUwpIV.jpg",
+            // },
+            // {
+            //     preview:
+            //         "http://localhost/cslab-app/cms/public/storage/students/27/profile_pictures/uFCUflqD9YzpBiSO4WSyDzr8JxWkRFFlT0gssf92.jpg",
+            // },
+        ],
+        type: "file",
+        maxNumberOfFiles: 10,
+        previewElementStyle:
+            "flex flex-wrap border border-dashed gap-2 p-2 w-full top-0 left-0 min-h-[100px]",
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+        label: `Select Payment Picture/Screenshots to upload`,
     },
 };
 
