@@ -61,7 +61,7 @@ Route::prefix("api")->middleware(['auth', 'verified', 'verify.access.control'])-
 
     Route::post('/save-student', [StudentController::class, 'save'])->name('api.save.student');
     Route::post('/save-student-fees-record', [StudentController::class, 'saveStudentFees'])->name('api.save.student.fees');
-
+    Route::post('/download-student-fees-pdf', [StudentController::class, 'downloadStudentFeespdf'])->name('api.download.student.fees.pdf');
 
 
     Route::post('/save-students-attendance', [StudentController::class, 'saveStudentsAttendance'])->name('api.save.students.attendance');

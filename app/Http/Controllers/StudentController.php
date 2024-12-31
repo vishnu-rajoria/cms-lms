@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\TestMail;
 use Auth;
 use DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 // Models
 use App\Models\User;
@@ -24,6 +25,7 @@ use App\Models\Transaction;
 use App\Models\TransactionImage;
 use App\Models\Group;
 use Carbon\Carbon;
+use App;
 
 class StudentController extends Controller
 {
@@ -62,6 +64,18 @@ class StudentController extends Controller
     {
         $studentFeeHistory = StudentFee::where(['student_id' => $studentId])->orderBy('payment_date', 'desc')->get();
         return response()->json(["studentFeeHistory" => $studentFeeHistory]);
+    }
+
+    function downloadStudentFeespdf(Request $request)
+    {
+        $data  = array();
+        $data['student_id'] = $request->get('student_id');
+        $data['receipt_id'] = $request->get('receipt_id');
+        $data['user_details'] = User::where('id', $data['student_id'])->first()->toArray();
+        $data['student_details'] = Student::where('user_id', $data['student_id'])->first()->toArray();
+        $data['student_fee_details'] = StudentFee::where('id', $data['receipt_id'])->first()->toArray();
+        $pdf = Pdf::loadView('pdf.student_fee_receipt', $data);
+        return $pdf->stream('invoice.pdf');
     }
 
     function getGroupStudentAttendance($userId, $groupId)

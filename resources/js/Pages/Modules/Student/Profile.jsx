@@ -87,7 +87,7 @@ export default function ManageStudents({ studentId }) {
             <Modal show={showModal} onClose={() => setShowModal(false)}>
                 <div className="p-6">
                     <StudentFeeHistory
-                        studentId={studentId}
+                        studentDetails={studentDetails}
                         studentFeeHistoryData={studentFeeHistoryData}
                         studentFeeSaveSuccessHandler={
                             studentFeeSaveSuccessHandler

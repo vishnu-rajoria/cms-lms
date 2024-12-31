@@ -2,10 +2,12 @@ import Badge from "@/Components/Badge";
 import { formattedMysqlDateAndTime } from "@/Helpers/TimeHelper";
 import { useState } from "react";
 import StudentFeesForm from "@/Forms/StudentFeesForm";
+import { Link } from "@inertiajs/react";
+import axios from "axios";
 
 export default function StudentFeeHistory({
     studentFeeSaveSuccessHandler,
-    studentId,
+    studentDetails,
     studentFeeHistoryData,
     ...props
 }) {
@@ -63,9 +65,72 @@ export default function StudentFeeHistory({
                                         <div className="fee-mode grow  capitalize">
                                             {studentFeeHistoryRecord.fee_mode}
                                         </div>
-                                        {/* <div className="fee-mode">
-                            <button class="btn btn-link">receipt</button>
-                        </div> */}
+                                        <div className="fee-mode">
+                                            <form
+                                                // let downloadReceiptFormId={"download-student-fee-receipt-" + studentFeeHistoryRecord.id}
+                                                method="post"
+                                                action={route(
+                                                    "api.download.student.fees.pdf"
+                                                )}
+                                                onSubmit={(e) => {
+                                                    e.preventDefault();
+                                                    let submitURL =
+                                                        e.target.action;
+                                                    let formData = new FormData(
+                                                        e.target
+                                                    );
+                                                    axios({
+                                                        url: submitURL,
+                                                        responseType: "blob",
+                                                        method: "POST",
+                                                        data: {
+                                                            student_id:
+                                                                studentFeeHistoryRecord.student_id,
+                                                            receipt_id:
+                                                                studentFeeHistoryRecord.id,
+                                                        },
+                                                    }).then((response) => {
+                                                        const url =
+                                                            window.URL.createObjectURL(
+                                                                new Blob([
+                                                                    response.data,
+                                                                ])
+                                                            );
+                                                        const link =
+                                                            document.createElement(
+                                                                "a"
+                                                            );
+                                                        link.href = url;
+                                                        link.setAttribute(
+                                                            "download",
+                                                            "receipt-" +
+                                                                studentDetails.name +
+                                                                "-" +
+                                                                studentDetails.id +
+                                                                "-" +
+                                                                studentFeeHistoryRecord.payment_date +
+                                                                ".pdf"
+                                                        );
+                                                        document.body.appendChild(
+                                                            link
+                                                        );
+                                                        link.click();
+                                                    });
+                                                }}
+                                            >
+                                                <input
+                                                    type="text"
+                                                    name="student_fee_record_id"
+                                                    value={
+                                                        studentFeeHistoryRecord.id
+                                                    }
+                                                    hidden
+                                                />
+                                                <button className="btn btn-link">
+                                                    Receipt
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                 );
                             }
@@ -91,7 +156,7 @@ export default function StudentFeeHistory({
                             studentFeeSaveSuccessHandler
                         }
                         showFeesHistory={() => showFeesHistory()}
-                        studentId={studentId}
+                        studentId={studentDetails.id}
                     />
                 </div>
             )}
