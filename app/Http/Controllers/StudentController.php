@@ -47,6 +47,7 @@ class StudentController extends Controller
     }
     public function getStudentDetails($studentId)
     {
+        $groups = [];
         $studentDetails =  User::select('id', 'name', 'email')->with(['studentDetails' => function ($query) {
             $query->select('user_id', 'fname', 'course_id', 'profile_pic', 'doj', 'mobile_number_1', 'mobile_number_2', 'portfolio_link', 'is_record_update_remaining', 'course_fee_amount', 'course_fee_concession', 'amount_paid');
         }])->where(['id' => $studentId])->first();
@@ -407,6 +408,60 @@ class StudentController extends Controller
     ) {
         return Inertia::render('Modules/Student/Profile', [
             'studentId' => $student_id,
+        ]);
+    }
+
+    function verifyStudentFeesReceipt($verification_code)
+    {
+        $verification_code_exploded = explode('C', substr($verification_code, 10));
+        $student_id = $verification_code_exploded[0];
+        $verification_code = $verification_code_exploded[1];
+        $verification_code_exploded = explode('S', $verification_code);
+        $transaction_id = $verification_code_exploded[0];
+        $verification_code = $verification_code_exploded[1];
+        $verification_code_exploded = explode('L', $verification_code);
+        $amount = $verification_code_exploded[0];
+        $verification_code = $verification_code_exploded[1];
+        $verification_code_exploded = explode('A', $verification_code);
+        $year = $verification_code_exploded[0];
+        $verification_code = $verification_code_exploded[1];
+        $verification_code_exploded = explode('B', $verification_code);
+        $month = $verification_code_exploded[0];
+        $day = $verification_code_exploded[1];
+
+        // echo $student_id;
+        // echo $transaction_id;
+        // echo $amount;
+        // echo $year;
+        // echo $month;
+        // echo $day;
+        $verification_response_data = [];
+
+        try {
+            $prepared_payment_date = date_create($year . '-' . $month . '-' . $day);
+            if ($prepared_payment_date) {
+                $payment_date = date_format($prepared_payment_date, "Y-m-d H:i:s");
+                // echo $payment_date;
+                $isStudentFeeRecordFound = StudentFee::where(['student_id' =>  $student_id, 'transaction_id' => $transaction_id, 'fee_amount' => $amount, 'payment_date' => $payment_date])->count();
+
+                $verification_response_data['is_fee_verified'] = $isStudentFeeRecordFound ? true : false;
+
+                if ($isStudentFeeRecordFound) {
+                    $studentDetails =  User::select('id', 'name', 'email')->with(['studentDetails' => function ($query) {
+                        $query->select('user_id', 'fname', 'course_id', 'profile_pic', 'doj', 'mobile_number_1', 'mobile_number_2', 'portfolio_link', 'is_record_update_remaining', 'course_fee_amount', 'course_fee_concession', 'amount_paid');
+                    }])->where(['id' => $student_id])->first();
+                    $verification_response_data['studentDetails'] = $studentDetails;
+                }
+            } else {
+                $verification_response_data['is_fee_verified'] = false;
+            }
+        } catch (\Exception $e) {
+            $verification_response_data['is_fee_verified'] = false;
+        }
+
+
+        return Inertia::render('Modules/Student/VerifyStudentFeeReceipt', [
+            'verificationResponseData' => $verification_response_data,
         ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\QRCodeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,7 +43,7 @@ Route::prefix("group")->middleware(['auth', 'verified', 'verify.access.control']
     Route::get('/{group_id}/mark-attendance/{date}', [GroupController::class, 'displayMarkAttendanceForm'])->name('mark.student.attendance.form');
 });
 
-
+Route::get('/api/verify-student-fees-receipt/{verification_code}', [StudentController::class, 'verifyStudentFeesReceipt'])->name('api.verify.student.fees.receipt');
 
 
 Route::prefix("api")->middleware(['auth', 'verified', 'verify.access.control'])->group(function () {
@@ -64,6 +65,8 @@ Route::prefix("api")->middleware(['auth', 'verified', 'verify.access.control'])-
     Route::post('/download-student-fees-pdf', [StudentController::class, 'downloadStudentFeespdf'])->name('api.download.student.fees.pdf');
 
 
+
+
     Route::post('/save-students-attendance', [StudentController::class, 'saveStudentsAttendance'])->name('api.save.students.attendance');
 
     // API for group module
@@ -75,9 +78,13 @@ Route::prefix("api")->middleware(['auth', 'verified', 'verify.access.control'])-
     Route::post('/assign-students-to-group', [GroupController::class, 'assignStudentsToGroup'])->name('api.assign.students.to.group');
 
     Route::post('/get-group-students-attendance', [StudentController::class, 'getGroupStudentsAttendance'])->name('api.get.group.students.attendance');
+
+
+    // APi code Qr code
+    // Route::get('generate-qr-code', [QRCodeController::class, 'geneateQrCode'])->name('generate.qr.code');
 });
 
-
+Route::get('api/generate-qr-code', [QRCodeController::class, 'geneateQrCode'])->name('generate.qr.code');
 
 
 Route::prefix("student")->middleware(['auth', 'verified', 'verify.access.control'])->group(function () {

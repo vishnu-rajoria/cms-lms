@@ -1,11 +1,36 @@
 <?php
+
+use App\Helpers\AmountHelper;
+use App\Helpers\RandomHelper;
+
 $data = file_get_contents(storage_path('app/public/app_media/CSLAB Logo.png'));
 $file_type = "png";
 $base64 = 'data:image/' . $file_type . ';base64,' . base64_encode($data);
 
+
+
+$student_id = $student_fee_details['student_id'];
+$transaction_id = $student_fee_details['transaction_id'];
+$fee_amount = $student_fee_details['fee_amount'];
+$payment_date = $student_fee_details['payment_date'];
+$payment_date_parts = explode('-', $payment_date);
+$payment_date_year = $payment_date_parts[0];
+$payment_date_month = $payment_date_parts[1];
+$payment_date_day = $payment_date_parts[2];
+$randomString = RandomHelper::generateRandomString(5);
+$randomAlpthabetString = RandomHelper::generateRandomAlphabetsString(5);
+$verification_code = $randomString . $randomAlpthabetString . $student_id . 'C' . $transaction_id . 'S' . $fee_amount . 'L' . $payment_date_year . 'A' . $payment_date_month . 'B' . explode(' ', $payment_date_day)[0];
+$linkToVerify = route('api.verify.student.fees.receipt', ['verification_code' => $verification_code]);
+
+
+$qrCodeImageData =  file_get_contents(route('generate.qr.code', ['msg' => $linkToVerify]));
+$qr_code_file_type = "png";
+$qr_code_base64 = 'data:image/' . $file_type . ';base64,' . base64_encode($qrCodeImageData);
+
+
 $address = "City light Colony, Piprali Road Sikar";
 $contact_number = "6378535557";
-$services = "Internship | Software/ Web Development | Training | Graphic Design | Video Editing |Technology Rollout";
+$services = "Internship | Software/ Web Development | Training ";
 $website = "www.cslab.in";
 $about_institute = "mycslab provides high-quality computer education in SIkar at a very high standard at a very low cost. We believe that training in the latest computer technologies is an essential ingredient for
 building a successful career in the IT Industry. mycslab’s mission is to create a pool of highquality software/ Computer professionals who will meet the demanding needs of multinational
@@ -21,6 +46,7 @@ the industry."
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
@@ -30,7 +56,7 @@ the industry."
 
         body {
             margin: 20px;
-
+            /* font-family: DejaVu Sans; */
 
         }
 
@@ -57,7 +83,7 @@ the industry."
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 70px;
+            height: 60px;
         }
 
         .detail {
@@ -85,38 +111,45 @@ the industry."
             </div>
             <div class="detail">
                 <b>Date of Joining : </b>
-                {{ $student_details['doj'] }}
+                {{ date_format(date_create($student_details['doj']),"d-m-Y")}}
             </div>
             <div class="detail">
                 <b>Course Title : </b>
                 Full Stack Web development
             </div>
             <div class="detail">
-                <b>Fee Submit date : </b>
-                {{ $student_fee_details['payment_date'] }}
+                <b>Payment Date : </b>
+
+                {{ date_format(date_create($student_fee_details['payment_date']),"d-m-Y") }}
             </div>
             <div class="detail">
                 <b>Amount : </b>
-                {{ $student_fee_details['fee_amount'] }}
+                Rs. {{ $student_fee_details['fee_amount'] }}/-
             </div>
             <div class="detail">
                 <b>Amount in words: </b>
-                Five thousand rupees only
+                {{ucwords(AmountHelper::getAmountToWord((float)$student_fee_details['fee_amount']))}} Rupess only
             </div>
             <div class="detail">
                 <b>Payment Mode: </b>
                 {{ $student_fee_details['fee_mode'] }}
             </div>
+            <div class="detail">
+                <b>Total Fee Received: </b>
+                Rs. {{ $student_details['amount_paid'] }}/-
+            </div>
         </div>
 
-        <div class="qr-code" style="text-align:center; margin:30px; font-size:10px;">
-            <img src="https://abcd.com" style="width:100px;height:100px" alt="">
+        <div class="qr-code" style="text-align:center; font-size:10px;">
+            <a href="{{$linkToVerify}}" target="_BLANK"><img src="{{$qr_code_base64}}" style="width:100px;height:100px; margin-top:20px;" alt=""></a>
             <div>(Scan QR code for more detail)</div>
-            <p>Address : {{ $address }}</p>
+            <p style="margin-top:10px;">Address : {{ $address }}</p>
             <p>Contact Number : {{ $contact_number }}</p>
-            <p>Website : {{ $website }}</p>
-            <p style="font-size:8px;">Services : {{ $services }}</p>
-            <p style="font-size:8px;">About Institute : {{ $about_institute }}</p>
+            <p><b><a style="text-decoration:none; color:black;" href="https://{{ $website }}">{{ $website }}</a></b></p>
+            <div style="font-size:8px; margin-top:10px">
+                <p><b>{{ $services }}</b></p>
+                <p style="text-align:justify;">{{ $about_institute }}</p>
+            </div>
         </div>
     </div>
 </body>

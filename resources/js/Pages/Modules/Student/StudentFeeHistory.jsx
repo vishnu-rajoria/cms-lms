@@ -12,9 +12,12 @@ export default function StudentFeeHistory({
     ...props
 }) {
     const [isAddFeeFormVisible, setIsAddFeeFormVisible] = useState(false);
-
+    const [isReceiptDownloadStart, setIsReceiptDownloadStart] = useState(false);
     function showFeesHistory() {
         setIsAddFeeFormVisible(!isAddFeeFormVisible);
+    }
+    function startDownloadReceipt() {
+        setIsReceiptDownloadStart(true);
     }
 
     return (
@@ -74,6 +77,20 @@ export default function StudentFeeHistory({
                                                 )}
                                                 onSubmit={(e) => {
                                                     e.preventDefault();
+
+                                                    let downloadReceiptBtn =
+                                                        document.querySelector(
+                                                            "#download-receipt-btn-" +
+                                                                studentFeeHistoryRecord.id
+                                                        );
+
+                                                    downloadReceiptBtn.innerText =
+                                                        "wait...";
+                                                    downloadReceiptBtn.setAttribute(
+                                                        "disabled",
+                                                        "disabled"
+                                                    );
+
                                                     let submitURL =
                                                         e.target.action;
                                                     let formData = new FormData(
@@ -115,6 +132,11 @@ export default function StudentFeeHistory({
                                                             link
                                                         );
                                                         link.click();
+                                                        downloadReceiptBtn.innerText =
+                                                            "Download Receipt";
+                                                        downloadReceiptBtn.removeAttribute(
+                                                            "disabled"
+                                                        );
                                                     });
                                                 }}
                                             >
@@ -126,8 +148,19 @@ export default function StudentFeeHistory({
                                                     }
                                                     hidden
                                                 />
-                                                <button className="btn btn-link">
-                                                    Receipt
+                                                <button
+                                                    id={
+                                                        "download-receipt-btn-" +
+                                                        studentFeeHistoryRecord.id
+                                                    }
+                                                    className="btn btn-link"
+                                                    disabled={
+                                                        isReceiptDownloadStart
+                                                    }
+                                                >
+                                                    {isReceiptDownloadStart
+                                                        ? "Preparing Receipt"
+                                                        : "Download Receipt"}
                                                 </button>
                                             </form>
                                         </div>

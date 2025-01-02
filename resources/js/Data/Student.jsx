@@ -255,7 +255,7 @@ export const studentRegistrationFormFields = {
         label: "Concession",
         type: "number",
         value: "0",
-        validatorRules: ["notRequired", "min|0", "max|10000"],
+        validatorRules: ["notRequired", "min|0", "max|100000"],
         fieldValidationStatus: {
             isInvalid: false,
             message: "",
