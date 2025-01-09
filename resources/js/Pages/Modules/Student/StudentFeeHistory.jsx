@@ -6,6 +6,7 @@ import { Link } from "@inertiajs/react";
 import axios from "axios";
 
 export default function StudentFeeHistory({
+    canModify,
     studentFeeSaveSuccessHandler,
     studentDetails,
     studentFeeHistoryData,
@@ -26,14 +27,18 @@ export default function StudentFeeHistory({
                 <div className="fees-history">
                     <h1 class="text-lg font-bold text-gray-200 py-6 flex justify-between">
                         Fee History
-                        <button
-                            className="btn btn-link"
-                            onClick={() => {
-                                setIsAddFeeFormVisible(!isAddFeeFormVisible);
-                            }}
-                        >
-                            Add payment
-                        </button>
+                        {canModify && (
+                            <button
+                                className="btn btn-link"
+                                onClick={() => {
+                                    setIsAddFeeFormVisible(
+                                        !isAddFeeFormVisible
+                                    );
+                                }}
+                            >
+                                Add payment
+                            </button>
+                        )}
                     </h1>
                     <div class="grid gap-1">
                         {studentFeeHistoryData.map(
@@ -77,7 +82,6 @@ export default function StudentFeeHistory({
                                                 )}
                                                 onSubmit={(e) => {
                                                     e.preventDefault();
-
                                                     let downloadReceiptBtn =
                                                         document.querySelector(
                                                             "#download-receipt-btn-" +
@@ -105,6 +109,7 @@ export default function StudentFeeHistory({
                                                                 studentFeeHistoryRecord.student_id,
                                                             receipt_id:
                                                                 studentFeeHistoryRecord.id,
+                                                            page_size: "A5",
                                                         },
                                                     }).then((response) => {
                                                         const url =

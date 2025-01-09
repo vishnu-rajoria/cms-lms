@@ -11,7 +11,7 @@ class QRCodeController extends Controller
     {
         $image = QrCode::format('png')
             ->merge(public_path('storage/app_media/CSLAB Logo white-bg.jpg'), 0.5, true)
-            ->size(150)
+            ->size(300)
             ->errorCorrection('H')
             ->generate($request->msg);
 

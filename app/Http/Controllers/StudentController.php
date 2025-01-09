@@ -67,15 +67,21 @@ class StudentController extends Controller
         return response()->json(["studentFeeHistory" => $studentFeeHistory]);
     }
 
-    function downloadStudentFeespdf(Request $request)
+    function downloadStudentFeesPdf(Request $request)
     {
         $data  = array();
+        $page_size = $request->get('page_size') == null ? 'A6' : $request->get('page_size');
         $data['student_id'] = $request->get('student_id');
         $data['receipt_id'] = $request->get('receipt_id');
+
         $data['user_details'] = User::where('id', $data['student_id'])->first()->toArray();
         $data['student_details'] = Student::where('user_id', $data['student_id'])->first()->toArray();
         $data['student_fee_details'] = StudentFee::where('id', $data['receipt_id'])->first()->toArray();
-        $pdf = Pdf::loadView('pdf.student_fee_receipt', $data);
+        if ($page_size == 'A5') {
+            $pdf = Pdf::loadView('pdf.student_fee_receipt_a4', $data)->setPaper('A5');
+        } else {
+            $pdf = Pdf::loadView('pdf.student_fee_receipt', $data)->setPaper('A6');
+        }
         return $pdf->stream('invoice.pdf');
     }
 
@@ -406,7 +412,7 @@ class StudentController extends Controller
     function showProfile(
         $student_id
     ) {
-        return Inertia::render('Modules/Student/Profile', [
+        return Inertia::render('Modules/Student/ManageStudentProfile', [
             'studentId' => $student_id,
         ]);
     }
@@ -439,25 +445,36 @@ class StudentController extends Controller
 
         try {
             $prepared_payment_date = date_create($year . '-' . $month . '-' . $day);
+
+
             if ($prepared_payment_date) {
-                $payment_date = date_format($prepared_payment_date, "Y-m-d H:i:s");
-                // echo $payment_date;
-                $isStudentFeeRecordFound = StudentFee::where(['student_id' =>  $student_id, 'transaction_id' => $transaction_id, 'fee_amount' => $amount, 'payment_date' => $payment_date])->count();
+                $payment_date_start = date_format($prepared_payment_date, "Y-m-d") . "  00:00:00";
+                $payment_date_end = date_format($prepared_payment_date, "Y-m-d") . "  23:59:59";
+
+                $studentFeeCondition = ['student_id' =>  $student_id, 'transaction_id' => $transaction_id, 'fee_amount' => $amount];
+
+                //print_r($studentFeeCondition);
+
+                $isStudentFeeRecordFound = StudentFee::where($studentFeeCondition)->whereBetween('payment_date', [$payment_date_start, $payment_date_end])->count();
+
 
                 $verification_response_data['is_fee_verified'] = $isStudentFeeRecordFound ? true : false;
 
                 if ($isStudentFeeRecordFound) {
                     $studentDetails =  User::select('id', 'name', 'email')->with(['studentDetails' => function ($query) {
                         $query->select('user_id', 'fname', 'course_id', 'profile_pic', 'doj', 'mobile_number_1', 'mobile_number_2', 'portfolio_link', 'is_record_update_remaining', 'course_fee_amount', 'course_fee_concession', 'amount_paid');
-                    }])->where(['id' => $student_id])->first();
+                    }])->where(['id' => $student_id])->first()->toArray();
                     $verification_response_data['studentDetails'] = $studentDetails;
                 }
             } else {
+                // echo "Fee record not found";
                 $verification_response_data['is_fee_verified'] = false;
             }
         } catch (\Exception $e) {
+            // echo "Error while fetching data";
             $verification_response_data['is_fee_verified'] = false;
         }
+
 
 
         return Inertia::render('Modules/Student/VerifyStudentFeeReceipt', [

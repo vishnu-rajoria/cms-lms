@@ -11,7 +11,7 @@ import { formattedMysqlDateAndTime } from "@/Helpers/TimeHelper";
 import TextInput from "@/Components/TextInput";
 import Modal from "@/Components/Modal";
 import StudentFeeHistory from "./StudentFeeHistory";
-export default function ManageStudents({ studentId }) {
+export default function StudentProfile({ studentId, canModify }) {
     const [studentDetails, setStudentDetails] = useState({});
     const [groups, setGroups] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -68,25 +68,11 @@ export default function ManageStudents({ studentId }) {
     }, []);
 
     return (
-        <AuthenticatedLayout
-            header={
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                    <h2 className="text-xl">Student Profile</h2>
-
-                    <Link
-                        className="btn"
-                        href={baseURL + "/admin/register-student"}
-                    >
-                        Edit Profile
-                    </Link>
-                </div>
-            }
-        >
-            <Head title="Student Profile" />
-
+        <>
             <Modal show={showModal} onClose={() => setShowModal(false)}>
                 <div className="p-6">
                     <StudentFeeHistory
+                        canModify={canModify}
                         studentDetails={studentDetails}
                         studentFeeHistoryData={studentFeeHistoryData}
                         studentFeeSaveSuccessHandler={
@@ -104,9 +90,11 @@ export default function ManageStudents({ studentId }) {
                                 <div className="student-details-container md:flex flex-cols-3  gap-4 items-start  sm:justify-start">
                                     <div
                                         className="relative rounded-full border-4 cursor-pointer border-gray-200 w-[150px] h-[150px] max-w-[150px] max-h-[150px] overflow-hidden "
-                                        onClick={() => {
-                                            displayChangeProfilePictureForm();
-                                        }}
+                                        onClick={() =>
+                                            alert(
+                                                "Change Profile picture feature for student is comming soon!"
+                                            )
+                                        }
                                     >
                                         <img
                                             title="click to change profile picture"
@@ -124,13 +112,17 @@ export default function ManageStudents({ studentId }) {
                                     <div className="student-details">
                                         <h2 className="relative text-xl font-bold text-gray-900 dark:text-green-300 flex justify-start gap-2 group">
                                             {studentDetails.name}
-                                            <button className="btn btn-sm btn-primary edit-btn hidden group-hover:block cursor-pointer text-sm">
-                                                change
-                                            </button>
                                         </h2>
                                         <h3 className="group flex justify-start gap-2">
                                             {studentDetails.email}
-                                            <button className="btn btn-sm btn-primary edit-btn hidden group-hover:block cursor-pointer text-sm">
+                                            <button
+                                                className="btn btn-sm btn-primary edit-btn hidden group-hover:block cursor-pointer text-sm"
+                                                onClick={() =>
+                                                    alert(
+                                                        "Change email feature for student is comming soon!"
+                                                    )
+                                                }
+                                            >
                                                 change
                                             </button>
                                         </h3>
@@ -290,6 +282,6 @@ export default function ManageStudents({ studentId }) {
                     </div>
                 </div>
             )}
-        </AuthenticatedLayout>
+        </>
     );
 }

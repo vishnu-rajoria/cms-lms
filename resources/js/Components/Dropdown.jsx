@@ -27,7 +27,7 @@ const Trigger = ({ children }) => {
 
             {open && (
                 <div
-                    className="fixed inset-0 z-40 backdrop-blur-sm bg-gray-900 bg-opacity-80"
+                    className="fixed v-screen h-screen inset-0 z-50"
                     onClick={() => setOpen(false)}
                 ></div>
             )}
@@ -38,13 +38,13 @@ const Trigger = ({ children }) => {
 const Content = ({
     align = "right",
     width = "48",
-    contentClasses = "overflow-hidden bg-white ",
+    contentClasses = "overflow-hidden dark:bg-black dark:text-white",
     children,
     s,
 }) => {
     const { open, setOpen } = useContext(DropDownContext);
 
-    let alignmentClasses = "origin-top";
+    let alignmentClasses = "origin-top ";
 
     if (align === "left") {
         alignmentClasses = "ltr:origin-top-left rtl:origin-top-right start-0";
@@ -70,7 +70,7 @@ const Content = ({
                 leaveTo="opacity-0 scale-95 "
             >
                 <div
-                    className={`absolute rounded-md shadow-lg dark:shadow-transparent z-50 ${alignmentClasses} ${widthClasses}`}
+                    className={` absolute rounded-md shadow-lg dark:shadow-transparent z-50 ${alignmentClasses} ${widthClasses}`}
                     onClick={() => setOpen(false)}
                 >
                     <div
@@ -92,7 +92,7 @@ const DropdownLink = ({ className = "", children, ...props }) => {
         <Link
             {...props}
             className={
-                "block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none " +
+                " block w-full px-4 py-2 text-start text-sm leading-5  transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 border-2  border-green-500 dark:hover:bg-black darl:focus:bg-black  overflow-hidden " +
                 className
             }
         >
