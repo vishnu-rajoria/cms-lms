@@ -11,17 +11,31 @@ use App\Http\Controllers\QRCodeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Auth as Auth;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-        'author_name' => "Vishnu Rajoria",
 
-    ]);
-})->middleware(['guest']);
+
+    if (Auth::check()) {
+
+        if (Auth::user()->role_id == 1) {
+            return redirect()->route('admin.dashboard');
+        } elseif (Auth::user()->role_id == 2) {
+            return redirect()->route('teacher.dashboard');
+        } elseif (Auth::user()->role_id == 3) {
+            return redirect()->route('student.dashboard');
+        }
+        // return redirect()->route('admin.dashboard');
+    } else {
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+            'author_name' => "Vishnu Rajoria",
+        ]);
+    }
+});
 
 
 
