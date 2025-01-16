@@ -270,7 +270,7 @@ export default function StudentsTable({ groupId }) {
                                     "selectedRows"
                                 ].map((row) => {
                                     if (row.profile_pic) {
-                                        return `${baseURL}/storage/students/${row.id}/profile_pictures/${row.profile_pic}`;
+                                        return `${baseURL}/storage/students/${row.id}/profile_pics/${row.profile_pic}`;
                                     } else {
                                         return `${baseURL}/storage/dummy/profile_pic.jpg`;
                                     }

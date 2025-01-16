@@ -11,10 +11,13 @@ import { formattedMysqlDateAndTime } from "@/Helpers/TimeHelper";
 import TextInput from "@/Components/TextInput";
 import Modal from "@/Components/Modal";
 import StudentFeeHistory from "./StudentFeeHistory";
+import ChangeProfilePicForm from "@/Forms/ChangeProfilePicForm";
 export default function StudentProfile({ studentId, canModify }) {
     const [studentDetails, setStudentDetails] = useState({});
     const [groups, setGroups] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [showChangeProfilePicForm, setShowChangeProfilePicForm] =
+        useState(false);
     const [showFeesHistory, setShowFeesHistory] = useState(false);
     const [studentFeeHistoryData, setStudentFeeHistoryData] = useState([]);
     function getStudentDetails(studentId) {
@@ -67,18 +70,40 @@ export default function StudentProfile({ studentId, canModify }) {
         getStudentDetails(studentId);
     }, []);
 
+    function profilePicChangeResponseHandler(response) {
+        console.log("response handler");
+        console.log(response);
+
+        if (response.data.status == "success") {
+            setShowModal(false);
+        } else {
+            alert("There is an error while changing the profile picture");
+        }
+    }
+
     return (
         <>
             <Modal show={showModal} onClose={() => setShowModal(false)}>
                 <div className="p-6">
-                    <StudentFeeHistory
-                        canModify={canModify}
-                        studentDetails={studentDetails}
-                        studentFeeHistoryData={studentFeeHistoryData}
-                        studentFeeSaveSuccessHandler={
-                            studentFeeSaveSuccessHandler
-                        }
-                    />
+                    {showChangeProfilePicForm && (
+                        <ChangeProfilePicForm
+                            userId={studentDetails.id}
+                            userRoleId={studentDetails.role_id}
+                            profilePicChangeResponseHandler={
+                                profilePicChangeResponseHandler
+                            }
+                        />
+                    )}
+                    {showFeesHistory && (
+                        <StudentFeeHistory
+                            canModify={canModify}
+                            studentDetails={studentDetails}
+                            studentFeeHistoryData={studentFeeHistoryData}
+                            studentFeeSaveSuccessHandler={
+                                studentFeeSaveSuccessHandler
+                            }
+                        />
+                    )}
                 </div>
             </Modal>
 
@@ -90,11 +115,11 @@ export default function StudentProfile({ studentId, canModify }) {
                                 <div className="student-details-container md:flex flex-cols-3  gap-4 items-start  sm:justify-start">
                                     <div
                                         className="relative rounded-full border-4 cursor-pointer border-gray-200 w-[150px] h-[150px] max-w-[150px] max-h-[150px] overflow-hidden "
-                                        onClick={() =>
-                                            alert(
-                                                "Change Profile picture feature for student is comming soon!"
-                                            )
-                                        }
+                                        onClick={() => {
+                                            setShowModal(true);
+                                            setShowFeesHistory(false);
+                                            setShowChangeProfilePicForm(true);
+                                        }}
                                     >
                                         <img
                                             title="click to change profile picture"
@@ -247,6 +272,9 @@ export default function StudentProfile({ studentId, canModify }) {
                                             onClick={() => {
                                                 setShowModal(true);
                                                 setShowFeesHistory(true);
+                                                setShowChangeProfilePicForm(
+                                                    false
+                                                );
                                             }}
                                             className="btn btn-link"
                                         >

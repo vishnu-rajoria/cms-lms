@@ -13,7 +13,7 @@ export const studentsTableColumnsMini = [
                     <Link href={route("student.profile", row.id)}>
                         <img
                             className="w-[50px] rounded-full p-2"
-                            src={`${baseURL}/storage/students/${row.id}/profile_pictures/${row.profile_pic}`}
+                            src={`${baseURL}/storage/students/profile_pics/${row.id}/sm/sm-${row.profile_pic}`}
                         />
                     </Link>
                 );

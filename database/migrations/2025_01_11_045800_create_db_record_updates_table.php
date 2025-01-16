@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('db_record_updates', function (Blueprint $table) {
             $table->id();
             $table->boolean('is_record_update_remaining')->default(true);
-            $table->foreignId('created_by_user_id')->nullable()->nullable()->references('id')->on('users');
-            $table->foreignId('verified_by_user_id')->constrained('users');
+            $table->foreignId('created_by_user_id')->references('id')->on('users');
+            $table->foreignId('verified_by_user_id')->nullable()->references('id')->on('users');
             $table->boolean('is_batch_updates_successful')->default(false);
             $table->timestamps();
             $table->softDeletes('deleted_at', 0);
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('db_record_update_id')->constrained('db_record_updates');
             $table->string('table_name');
-            $table->string('record_id_to_update');
+            $table->text('stringified_conditional_columns_and_values');
             $table->text('stringified_record_entries'); // [column_name => value, old_value => "old value",new_value =>"new value"]
             $table->boolean('is_update_successful')->default(false);
             $table->timestamps();
@@ -38,7 +38,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('db_record_updates');
         Schema::dropIfExists('db_record_update_entries');
+        Schema::dropIfExists('db_record_updates');
     }
 };

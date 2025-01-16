@@ -13,7 +13,7 @@ use App\Mail\TestMail;
 use Auth;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Imagick;
 // Models
 use App\Models\User;
 use App\Models\Student;
@@ -24,6 +24,9 @@ use App\Models\StudentFee;
 use App\Models\Transaction;
 use App\Models\TransactionImage;
 use App\Models\Group;
+use App\Models\DbRecordUpdate;
+use App\Models\DbRecordUpdateEntry;
+use App\Models\Notification;
 use Carbon\Carbon;
 use App;
 
@@ -48,7 +51,7 @@ class StudentController extends Controller
     public function getStudentDetails($studentId)
     {
         $groups = [];
-        $studentDetails =  User::select('id', 'name', 'email')->with(['studentDetails' => function ($query) {
+        $studentDetails =  User::select('id', 'name', 'email', 'role_id')->with(['studentDetails' => function ($query) {
             $query->select('user_id', 'fname', 'course_id', 'profile_pic', 'doj', 'mobile_number_1', 'mobile_number_2', 'portfolio_link', 'is_record_update_remaining', 'course_fee_amount', 'course_fee_concession', 'amount_paid');
         }])->where(['id' => $studentId])->first();
 
@@ -85,6 +88,108 @@ class StudentController extends Controller
         return $pdf->stream('invoice.pdf');
     }
 
+    function updateProfilePic(Request $request)
+    {
+        $role_id = $request->user_role_id;
+        $user_id = $request->user_id;
+        $imageBlob = $request->file('profile_pic');
+        $user_storage_directory = "students";
+        $profile_pic_table = "students";
+        if ($role_id == 1) {
+            $user_storage_directory = "admins";
+            $profile_pic_table = "admins";
+        } elseif ($role_id == 2) {
+            $user_storage_directory = "teachers";
+            $profile_pic_table = "teachers";
+        }
+        $profile_pic_save_directory =  "$user_storage_directory/profile_pics/$user_id/original";
+        $uploadedFilePath = Storage::disk('public')->put($profile_pic_save_directory, $imageBlob);
+        $saved_file_name = str_replace($profile_pic_save_directory . '/', '', $uploadedFilePath);
+
+
+        $image = new Imagick(public_path() . "/storage/" . $uploadedFilePath);
+        // Resize the image to a width of 800 pixels while maintaining aspect ratio
+        $image->resizeImage(200, 0, Imagick::FILTER_LANCZOS, 1);
+        // Save the resized image
+        $profile_pic_save_directory =  public_path() . "/storage/" . "$user_storage_directory/profile_pics/$user_id/md";
+        if (!file_exists($profile_pic_save_directory)) {
+            mkdir($profile_pic_save_directory, 666, true);
+        }
+        $image->writeImage("$profile_pic_save_directory/md-$saved_file_name");
+        // Storage::disk('public')->put($profile_pic_save_directory, $imageBlob)
+
+
+        $image = new Imagick(public_path() . "/storage/" . $uploadedFilePath);
+        // Resize the image to a width of 800 pixels while maintaining aspect ratio
+        $image->resizeImage(50, 0, Imagick::FILTER_LANCZOS, 1);
+        // Save the resized image
+        $profile_pic_save_directory =  public_path() . "/storage/" . "$user_storage_directory/profile_pics/$user_id/sm";
+        if (!file_exists($profile_pic_save_directory)) {
+            mkdir($profile_pic_save_directory, 666, true);
+        }
+        $image->writeImage("$profile_pic_save_directory/sm-$saved_file_name");
+
+
+
+        // echo $saved_file_name;
+        $DbRecordUpdateData['created_by_user_id'] = Auth::user()->id;
+        $savedRecordUpdateInfo =  DbRecordUpdate::create($DbRecordUpdateData);
+        $savedRecordUpdateId =  $savedRecordUpdateInfo->id;
+
+        $DbRecordUpdateEntryData['db_record_update_id'] = $savedRecordUpdateId;
+        $DbRecordUpdateEntryData['table_name'] = $profile_pic_table;
+
+        $matchingColumnsAndValues = array();
+        $matchingColumnsAndValues['user_id'] = $user_id;
+
+        $DbRecordUpdateEntryData['stringified_conditional_columns_and_values'] = json_encode($matchingColumnsAndValues);
+
+        $recordEnteries = array();
+        $profilePicEntry['column_name'] = "profile_pic";
+        $profilePicEntry['old_value'] = DB::table($profile_pic_table)->where(['user_id' => $user_id])->first()->profile_pic;
+        $profilePicEntry['new_value'] = $saved_file_name;
+
+        $recordEnteries[] = $profilePicEntry;
+        $DbRecordUpdateEntryData['stringified_record_entries'] = json_encode($recordEnteries);
+        $DbRecordUpdateEntryData['created_at'] = Carbon::now();
+        // print_r($DbRecordUpdateEntryData);
+        DbRecordUpdateEntry::create($DbRecordUpdateEntryData);
+
+        $actions = [];
+        $accept_action = ["title" => "accept", "method" => "post", "routeName" => "accept.profile.pic.change", "type" => "axios", "data" => ["table" => "db_record_updates", "recordId" => $savedRecordUpdateId]];
+
+        $reject_action = ["title" => "reject", "method" => "post", "routeName" => "reject.profile.pic.change", "type" => "axios", "data" => ["table" => "db_record_updates", "recordId" => $savedRecordUpdateId]];
+
+        $actions[] = $accept_action;
+        $actions[] = $reject_action;
+
+        Notification::create([
+            "type" => "PPCR",  //profile_pic_change_requested
+            "message" => "profile picture updated by " . Auth::user()->name . ". Please accept or reject",
+            "thumbnail_image" => str_replace(public_path(), "", "$profile_pic_save_directory/sm-$saved_file_name"),
+            "sender_user_id" => Auth::user()->id,
+            "recipient_user_id" => 1,
+            "stringified_actions" => json_encode($actions),
+            "created_at" => Carbon::now()
+        ]);
+
+        return response()->json(["status" => "success"]);
+    }
+
+
+    function curl_get_contents($url)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        return $data;
+    }
+
+
     function getGroupStudentAttendance($userId, $groupId)
     {
         $studentAttendanceFormatted = [];
@@ -106,7 +211,7 @@ class StudentController extends Controller
         } else {
 
             if ($groupId == "all") {
-                $studentsRecordsFromDB = User::query()->select('id', 'name', 'email')->with(['studentDetails' => function ($query) {
+                $studentsRecordsFromDB = User::query()->select('id', 'name', 'email', 'role_id')->with(['studentDetails' => function ($query) {
                     $query->select('user_id', 'fname', 'course_id', 'profile_pic', 'doj');
                 }])->where(['role_id' => 3])->orderByDesc('created_at')->get();
             } else {
@@ -116,7 +221,7 @@ class StudentController extends Controller
                     $selectedStudentsId[] = $record['user_id'];
                 }
 
-                $studentsRecordsFromDB = User::query()->select('id', 'name', 'email')->with(['studentDetails' => function ($query) {
+                $studentsRecordsFromDB = User::query()->select('id', 'name', 'email', 'role_id')->with(['studentDetails' => function ($query) {
                     $query->select('user_id', 'fname', 'course_id', 'profile_pic', 'doj');
                 }])->where(['role_id' => 3])->whereIn('id', $selectedStudentsId)->orderByDesc('created_at')->get();
             }

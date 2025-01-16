@@ -10,6 +10,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\QRCodeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NotificationController;
 use Inertia\Inertia;
 use Auth as Auth;
 
@@ -55,12 +56,19 @@ Route::prefix("group")->middleware(['auth', 'verified', 'verify.access.control']
     Route::get('/{group_id}', [GroupController::class, 'viewGroupInfo'])->name('view.group.info');
 
     Route::get('/{group_id}/mark-attendance/{date}', [GroupController::class, 'displayMarkAttendanceForm'])->name('mark.student.attendance.form');
+
+    Route::post('/get-user-notifications', [NotificationController::class, 'getNotification'])->name('get.user.notification');
+
+    Route::post("/accept-profile-pic-change", [NotificationController::class, 'handleNotificationAction'])->name('accept.profile.pic.change');
+    Route::post("/reject-profile-pic-change", [NotificationController::class, 'handleNotificationAction'])->name('reject.profile.pic.change');
 });
 
 Route::get('/api/verify-student-fees-receipt/{verification_code}', [StudentController::class, 'verifyStudentFeesReceipt'])->name('api.verify.student.fees.receipt');
 
 
 Route::prefix("api")->middleware(['auth', 'verified', 'verify.access.control'])->group(function () {
+
+
 
     // API for course module
     Route::get('/get-courses', [CourseController::class, "getCourses"])->name("api.get.courses");
@@ -96,6 +104,9 @@ Route::prefix("api")->middleware(['auth', 'verified', 'verify.access.control'])-
 
     // APi code Qr code
     // Route::get('generate-qr-code', [QRCodeController::class, 'geneateQrCode'])->name('generate.qr.code');
+
+
+    Route::post('/update-profile-pic', [StudentController::class, 'updateProfilePic'])->name('api.update.profile.pic');
 });
 
 Route::get('api/generate-qr-code', [QRCodeController::class, 'geneateQrCode'])->name('generate.qr.code');

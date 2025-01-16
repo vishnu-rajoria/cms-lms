@@ -4,7 +4,7 @@ export const getStudentImageURL = (studentId, fileName) => {
     if (fileName) {
         return (
             baseURL +
-            `/storage/students/${studentId}/profile_pictures/${fileName}`
+            `/storage/students/profile_pics/${studentId}/md/md-${fileName}`
         );
     } else {
         return baseURL + `/storage/dummy/profile_pic.jpg`;
