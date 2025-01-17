@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import ThemeSwitcher from "@/Components/ThemeSwitcher";
 import Theme from "@/Theme/Theme";
 import Breather from "@/Components/Breather";
+import Notification from "@/Components/Notification";
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -33,8 +34,9 @@ export default function AuthenticatedLayout({ header, children }) {
 
                             <div className="ms-6 flex items-center">
                                 <Breather />
+                                <Notification userId={user.id} />
                                 <ThemeSwitcher />
-                                <div className="relative ms-3 z-[100] ">
+                                <div className="relative ms-3 ">
                                     <Dropdown>
                                         <Dropdown.Trigger>
                                             <span className="inline-flex rounded-md">

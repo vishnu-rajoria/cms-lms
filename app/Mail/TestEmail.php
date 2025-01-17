@@ -6,20 +6,18 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TestMail extends Mailable
+class TestEmail extends Mailable
 {
     use Queueable, SerializesModels;
-
     /**
      * Create a new message instance.
      */
-    public function __construct()
-    {
-        //
-    }
+
+    public function __construct(public $code = 7890) {}
 
     /**
      * Get the message envelope.
@@ -27,7 +25,9 @@ class TestMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Test Mail',
+            subject: 'Profile picture changed successfully',
+            from: new Address('info@cslab.in', 'CSLAB-Sikar'),
+
         );
     }
 
@@ -37,7 +37,10 @@ class TestMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.test-mail',
+            view: 'mail.test-mail',
+            with: [
+                'code' => "5678",
+            ],
         );
     }
 

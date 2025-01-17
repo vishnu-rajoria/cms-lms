@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "56889ae295c6dbda20887d00c6772f9e",
+    "content-hash": "3adf49de09d126aac84d83c5b7148e8e",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4659,16 +4659,16 @@
         },
         {
             "name": "resend/resend-php",
-            "version": "v0.14.0",
+            "version": "v0.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/resend/resend-php.git",
-                "reference": "d7900752bb9839421d40d9e66362bffb3ec07aac"
+                "reference": "53840a00e0aa234f39ee4da3a679b97df8fd2284"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/resend/resend-php/zipball/d7900752bb9839421d40d9e66362bffb3ec07aac",
-                "reference": "d7900752bb9839421d40d9e66362bffb3ec07aac",
+                "url": "https://api.github.com/repos/resend/resend-php/zipball/53840a00e0aa234f39ee4da3a679b97df8fd2284",
+                "reference": "53840a00e0aa234f39ee4da3a679b97df8fd2284",
                 "shasum": ""
             },
             "require": {
@@ -4710,9 +4710,9 @@
             ],
             "support": {
                 "issues": "https://github.com/resend/resend-php/issues",
-                "source": "https://github.com/resend/resend-php/tree/v0.14.0"
+                "source": "https://github.com/resend/resend-php/tree/v0.15.1"
             },
-            "time": "2024-11-01T02:00:44+00:00"
+            "time": "2025-01-03T23:17:55+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",

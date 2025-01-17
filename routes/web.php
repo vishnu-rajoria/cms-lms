@@ -7,6 +7,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\QRCodeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -38,7 +39,7 @@ Route::get('/', function () {
     }
 });
 
-
+Route::get("test-email", [EmailController::class, "testEmail"])->name("test.email");
 
 Route::prefix("admin")->middleware(['auth', 'verified', 'verify.access.control'])->group(function () {
 

@@ -13,7 +13,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "pusher/pusher-php-server": "^7.2",
-        "resend/resend-php": "^0.14.0",
+        "resend/resend-php": "^0.15.1",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "tightenco/ziggy": "^2.0"
     },
