@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { baseURL } from "@/Env";
 import axios from "axios";
+import { formatMySqlTimestampTime } from "../Helpers/TimeHelper";
 
 export default function Notification({ userId, ...props }) {
     const [showNotifications, setShowNotifications] = useState(false);
-
     const [notifications, setNotifications] = useState([]);
     const [currentNotification, setCurrentNotification] = useState({});
     const [currentNotificationIndex, setCurrentNotificationIndex] = useState(0);
@@ -158,12 +158,28 @@ export default function Notification({ userId, ...props }) {
                                                     <h3 className="font-semibold">
                                                         {currentNotification.type ==
                                                         "PPCR"
-                                                            ? "Profile Pic changed"
+                                                            ? "Profile Pic changed "
+                                                            : currentNotification.type ==
+                                                              "PPCRR"
+                                                            ? "Profile pic rejected "
                                                             : "Not title"}
+
+                                                        <span className="text-sm font-thin text-gray-400">
+                                                            (
+                                                            {" " +
+                                                                formatMySqlTimestampTime(
+                                                                    currentNotification.created_at
+                                                                )}
+                                                            )
+                                                        </span>
                                                     </h3>
                                                     <p className="text-gray-400">
                                                         {
-                                                            currentNotification.message
+                                                            <div
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html: currentNotification.message,
+                                                                }}
+                                                            ></div>
                                                         }
                                                     </p>
                                                 </div>
@@ -173,22 +189,23 @@ export default function Notification({ userId, ...props }) {
                                             currentNotification.stringified_actions
                                         } */}
 
-                                                {JSON.parse(
-                                                    currentNotification.stringified_actions
-                                                ).map((action) => (
-                                                    <a
-                                                        href="#"
-                                                        class="btn btn-primary rounded-0 flex justify-center my-2"
-                                                        onClick={(event) =>
-                                                            actionHandler(
-                                                                event,
-                                                                action
-                                                            )
-                                                        }
-                                                    >
-                                                        {action.title}
-                                                    </a>
-                                                ))}
+                                                {currentNotification.stringified_actions &&
+                                                    JSON.parse(
+                                                        currentNotification.stringified_actions
+                                                    ).map((action) => (
+                                                        <a
+                                                            href="#"
+                                                            class="btn btn-primary rounded-0 flex justify-center my-2"
+                                                            onClick={(event) =>
+                                                                actionHandler(
+                                                                    event,
+                                                                    action
+                                                                )
+                                                            }
+                                                        >
+                                                            {action.title}
+                                                        </a>
+                                                    ))}
                                             </div>
                                         </>
                                     )}

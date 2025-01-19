@@ -31,6 +31,10 @@ class NotificationController extends Controller
         $loggedInUser = Auth::user();
         $is_batch_updates_successful = true;
 
+        $notification = Notification::where('id', $notificationId)->first()->toArray();
+        // print_r($request->all());
+        // print_r($notification);
+
         if ($table = "db_record_updates") {
 
             // if the action is to accept the profile pic then set the corrosponding fields in various field
@@ -66,8 +70,43 @@ class NotificationController extends Controller
                 DB::table("db_record_updates")->where('id', $recordId)->update(['is_record_update_remaining' => false, "verified_by_user_id" => $loggedInUser->id, "is_batch_updates_successful" => true]);
 
                 if ($action == "accept.profile.pic.change") {
+
+                    $savedNotification = Notification::create([
+                        "type" => "PPCRR",  //profile_pic_change_request_response
+                        "message" => "profile picture approved",
+                        "thumbnail_image" => "",
+                        "sender_user_id" => Auth::user()->id,
+                        "recipient_user_id" =>  $notification['sender_user_id'],
+                        "created_at" => Carbon::now()
+                    ]);
+                    $savedNotificationId = $savedNotification->id;
+
+                    $actions = [];
+                    $mark_read_notification = ["title" => "ok", "method" => "post", "routeName" => "mark.notification.as.seen", "type" => "axios", "data" => ["table" => "notifications", "recordId" => $savedNotificationId]];
+
+                    $actions[] = $mark_read_notification;
+
+                    Notification::where('id', $savedNotificationId)->update(['stringified_actions' => json_encode($actions)]);
+
                     return response()->json(["status" => "success", "operation" => "profile_pic_updated_successfully"], 200);
                 } elseif ($action == "reject.profile.pic.change") {
+                    $savedNotification = Notification::create([
+                        "type" => "PPCRR",  //profile_pic_change_request_response
+                        "message" => "your recent profile picture change request has been rejected. please check our <a class='link' href='" . route('profile.pic.policy') . " target='_blank'>profile picture policy</a> for more details",
+                        "thumbnail_image" => "",
+                        "sender_user_id" => Auth::user()->id,
+                        "recipient_user_id" =>  $notification['sender_user_id'],
+                        "created_at" => Carbon::now()
+                    ]);
+                    $savedNotificationId = $savedNotification->id;
+
+                    $actions = [];
+                    $mark_read_notification = ["title" => "ok", "method" => "post", "routeName" => "mark.notification.as.seen", "type" => "axios", "data" => ["table" => "notifications", "recordId" => $savedNotificationId]];
+
+                    $actions[] = $mark_read_notification;
+
+                    Notification::where('id', $savedNotificationId)->update(['stringified_actions' => json_encode($actions)]);
+
                     return response()->json(["status" => "success", "operation" => "profile_pic_rejected_successfully"], 200);
                 } else {
                     return response()->json(["status" => "can not detect action"], 300);

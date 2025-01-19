@@ -24,6 +24,25 @@ export function formattedMysqlDateAndTime(dateString) {
     );
 }
 
+export function formatMySqlTimestamp(timestampString) {
+    let formattedDate = new Date(timestampString);
+    return (
+        format(
+            formatISO(timestampString, {
+                representation: "date",
+            }),
+            "dd-MMMM-yyyy"
+        ) +
+        " / " +
+        formatDistance(new Date(), formattedDate) +
+        " ago "
+    );
+}
+
+export function formatMySqlTimestampTime(timestampString) {
+    let formattedDate = new Date(timestampString);
+    return formatDistance(new Date(), formattedDate) + " ago ";
+}
 export function getDayName(dateString) {
     const date = new Date(dateString); // Create a date object
     const dayOfWeek = date.getDay(); // Get the day of the week (0-6)

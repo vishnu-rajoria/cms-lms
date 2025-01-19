@@ -113,14 +113,7 @@ export default function StudentProfile({ studentId, canModify }) {
                         {
                             <>
                                 <div className="student-details-container md:flex flex-cols-3  gap-4 items-start  sm:justify-start">
-                                    <div
-                                        className="relative rounded-full border-4 cursor-pointer border-gray-200 w-[150px] h-[150px] max-w-[150px] max-h-[150px] overflow-hidden "
-                                        onClick={() => {
-                                            setShowModal(true);
-                                            setShowFeesHistory(false);
-                                            setShowChangeProfilePicForm(true);
-                                        }}
-                                    >
+                                    <div className="relative rounded-full border-4 cursor-pointer border-gray-200 w-[150px] h-[150px] max-w-[150px] max-h-[150px] overflow-hidden ">
                                         <img
                                             title="click to change profile picture"
                                             className="object-cover"
@@ -130,8 +123,36 @@ export default function StudentProfile({ studentId, canModify }) {
                                                     .profile_pic
                                             )}
                                         />
-                                        <div className="message text-center text-white absolute top-0 left-0 bg-black bg-opacity-50 w-full h-full grid place-content-center p-6 hover:opacity-100 opacity-0 transition-all ">
-                                            Change Profile Pic
+                                        <div className="message text-center text-white absolute top-0 left-0 bg-black bg-opacity-50 w-full h-full grid place-content-center p-6 hover:opacity-100 opacity-0 transition-all flex gap-2">
+                                            <span
+                                                className="btn btn-primary"
+                                                onClick={() => {
+                                                    setShowModal(true);
+                                                    setShowFeesHistory(false);
+                                                    setShowChangeProfilePicForm(
+                                                        true
+                                                    );
+                                                }}
+                                            >
+                                                Change
+                                            </span>
+                                            <Link
+                                                className="btn btn-primary flex justify-center"
+                                                method="post"
+                                                href={route("view.image")}
+                                                data={{
+                                                    imageUrl:
+                                                        getStudentImageURL(
+                                                            studentDetails.id,
+                                                            studentDetails
+                                                                .student_details
+                                                                .profile_pic
+                                                        ),
+                                                    download: false,
+                                                }}
+                                            >
+                                                View
+                                            </Link>
                                         </div>
                                     </div>
                                     <div className="student-details">

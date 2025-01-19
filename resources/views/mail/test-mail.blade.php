@@ -115,7 +115,7 @@
         </div>
         <div class="email-content">
             <div style="padding:60px 20px 20px 20px;">To update the email, your email verification code is</div>
-            <div class="code">1234</div>
+            <div class="code">{{isset($code)?$code:1452}}</div>
 
         </div>
         <div class="email_footer" style="border-radius:10px 10px 0px 0px ;>

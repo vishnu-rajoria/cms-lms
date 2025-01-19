@@ -12,9 +12,9 @@ class EmailController extends Controller
 {
     public function testEmail(Request $request)
     {
-        Mail::to("vishnurajoria18@gmail.com")->send(new TestEmail());
-        return "Email Sent";
+        // Mail::to("vishnurajoria18@gmail.com")->send(new TestEmail());
+        // return "Email Sent";
 
-        // return view('mail.test-mail');
+        return view('mail.test-mail');
     }
 }

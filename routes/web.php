@@ -1,5 +1,9 @@
 <?php
 
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
+
+
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
@@ -9,9 +13,9 @@ use App\Http\Controllers\AccessController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\QRCodeController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ImageController;
+
 use Inertia\Inertia;
 use Auth as Auth;
 
@@ -39,7 +43,11 @@ Route::get('/', function () {
     }
 });
 
+
+Route::post("view-image", [ImageController::class, "viewImage"])->name("view.image");
 Route::get("test-email", [EmailController::class, "testEmail"])->name("test.email");
+
+// Route::get("profile-pic-policy",[PolicyController:class])
 
 Route::prefix("admin")->middleware(['auth', 'verified', 'verify.access.control'])->group(function () {
 
