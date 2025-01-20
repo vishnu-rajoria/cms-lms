@@ -67,9 +67,11 @@ Route::prefix("group")->middleware(['auth', 'verified', 'verify.access.control']
     Route::get('/{group_id}/mark-attendance/{date}', [GroupController::class, 'displayMarkAttendanceForm'])->name('mark.student.attendance.form');
 
     Route::post('/get-user-notifications', [NotificationController::class, 'getNotification'])->name('get.user.notification');
-
+    Route::post('/mark-notification-as-seen', [NotificationController::class, 'markNotificationAsSeen'])->name('mark.notification.as.seen');
     Route::post("/accept-profile-pic-change", [NotificationController::class, 'handleNotificationAction'])->name('accept.profile.pic.change');
     Route::post("/reject-profile-pic-change", [NotificationController::class, 'handleNotificationAction'])->name('reject.profile.pic.change');
+    Route::post("/send-mail-for-change-user-email", [EmailController::class, 'sendMailForChangeUserEmail'])->name('send.mail.for.change.user.email');
+    Route::post("/change-user-email", [ProfileController::class, 'changeUserEmail'])->name('change.user.email');
 });
 
 Route::get('/api/verify-student-fees-receipt/{verification_code}', [StudentController::class, 'verifyStudentFeesReceipt'])->name('api.verify.student.fees.receipt');

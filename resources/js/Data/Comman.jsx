@@ -41,6 +41,117 @@ export const signaturePicFormFields = {
         label: `Select Profile Picture to upload`,
     },
 };
+
+export const changeEmailFormFields = {
+    new_email: {
+        label: "New Email",
+        value: "",
+        type: "email",
+        validatorRules: ["notEmpty", "validEmail"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+};
+
+export const verifyOtpFormFields = {
+    otp_field_1: {
+        label: "",
+        value: "",
+        type: "text",
+        validatorRules: ["notEmpty", "minLength|1", "maxLength|1", "onlyDigit"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    otp_field_2: {
+        label: "",
+        value: "",
+        type: "text",
+        validatorRules: ["notEmpty", "minLength|1", "maxLength|1", "onlyDigit"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    otp_field_3: {
+        label: "",
+        value: "",
+        type: "text",
+        validatorRules: ["notEmpty", "minLength|1", "maxLength|1", "onlyDigit"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    otp_field_4: {
+        label: "",
+        value: "",
+        type: "text",
+        validatorRules: ["notEmpty", "minLength|1", "maxLength|1", "onlyDigit"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    otp_field_5: {
+        label: "",
+        value: "",
+        type: "text",
+        validatorRules: ["notEmpty", "minLength|1", "maxLength|1", "onlyDigit"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    otp_field_6: {
+        label: "",
+        value: "",
+        type: "text",
+        validatorRules: ["notEmpty", "minLength|1", "maxLength|1", "onlyDigit"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+};
+
+export const changePasswordFormFields = {
+    current_password: {
+        label: "Current Password",
+        value: "",
+        type: "password",
+        validatorRules: ["notEmpty", "validPassword"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+
+    password: {
+        label: "New Password",
+        value: "",
+        type: "password",
+        validatorRules: ["notEmpty", "validPassword"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+    password_confirmation: {
+        label: "Confirm Password",
+        type: "password",
+        value: "",
+        validatorRules: ["notEmpty", "validPassword", "same|password"],
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+    },
+};
+
 export const permanentAddressFormFields = {
     permanent_address_line1: {
         label: "Address Line 1",

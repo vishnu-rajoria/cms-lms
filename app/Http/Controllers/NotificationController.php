@@ -72,9 +72,9 @@ class NotificationController extends Controller
                 if ($action == "accept.profile.pic.change") {
 
                     $savedNotification = Notification::create([
-                        "type" => "PPCRR",  //profile_pic_change_request_response
+                        "type" => "PPCRA",  //profile_pic_change_request_response
                         "message" => "profile picture approved",
-                        "thumbnail_image" => "",
+                        "thumbnail_image" => "/storage/app_media/photograph-photo.svg",
                         "sender_user_id" => Auth::user()->id,
                         "recipient_user_id" =>  $notification['sender_user_id'],
                         "created_at" => Carbon::now()
@@ -92,8 +92,8 @@ class NotificationController extends Controller
                 } elseif ($action == "reject.profile.pic.change") {
                     $savedNotification = Notification::create([
                         "type" => "PPCRR",  //profile_pic_change_request_response
-                        "message" => "your recent profile picture change request has been rejected. please check our <a class='link' href='" . route('profile.pic.policy') . " target='_blank'>profile picture policy</a> for more details",
-                        "thumbnail_image" => "",
+                        "message" => "your recent profile picture change request has been rejected. please check our <a class='link' style='text-decoration:underline' href='" . route('profile.pic.policy') . " target='_blank'>profile picture policy</a> for more details",
+                        "thumbnail_image" => "/storage/app_media/warning.svg",
                         "sender_user_id" => Auth::user()->id,
                         "recipient_user_id" =>  $notification['sender_user_id'],
                         "created_at" => Carbon::now()
@@ -115,5 +115,15 @@ class NotificationController extends Controller
                 return response()->json(["status" => "error"], 300);
             }
         }
+    }
+
+    function markNotificationAsSeen(Request $request)
+    {
+
+        // $table  = $request->table;
+        // $recordId = $request->recordId;
+        $notificationId = $request->notificationId;
+        Notification::where('id', $notificationId)->update(['seen_at' => Carbon::now()]);
+        return response()->json(["status" => "success"], 200);
     }
 }

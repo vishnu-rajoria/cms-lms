@@ -12,6 +12,8 @@ import TextInput from "@/Components/TextInput";
 import Modal from "@/Components/Modal";
 import StudentFeeHistory from "./StudentFeeHistory";
 import ChangeProfilePicForm from "@/Forms/ChangeProfilePicForm";
+
+import ChangeEmailForm from "@/Forms/ChangeEmailForm";
 export default function StudentProfile({ studentId, canModify }) {
     const [studentDetails, setStudentDetails] = useState({});
     const [groups, setGroups] = useState([]);
@@ -20,6 +22,7 @@ export default function StudentProfile({ studentId, canModify }) {
         useState(false);
     const [showFeesHistory, setShowFeesHistory] = useState(false);
     const [studentFeeHistoryData, setStudentFeeHistoryData] = useState([]);
+    const [showChangeEmailForm, setShowChangeEmailForm] = useState(false);
     function getStudentDetails(studentId) {
         // Display a loading toast message at the bottom-right
         const toastId = toast.loading("loading data...", {
@@ -81,10 +84,24 @@ export default function StudentProfile({ studentId, canModify }) {
         }
     }
 
+    function emailChangeResponseHandler(response) {
+        console.log("Email change response handler");
+        console.log(response);
+    }
+
     return (
         <>
             <Modal show={showModal} onClose={() => setShowModal(false)}>
                 <div className="p-6">
+                    {showChangeEmailForm && (
+                        <ChangeEmailForm
+                            userId={studentDetails.id}
+                            userRoleId={studentDetails.role_id}
+                            emailChangeResponseHandler={
+                                emailChangeResponseHandler
+                            }
+                        />
+                    )}
                     {showChangeProfilePicForm && (
                         <ChangeProfilePicForm
                             userId={studentDetails.id}
@@ -132,6 +149,9 @@ export default function StudentProfile({ studentId, canModify }) {
                                                     setShowChangeProfilePicForm(
                                                         true
                                                     );
+                                                    setShowChangeEmailForm(
+                                                        false
+                                                    );
                                                 }}
                                             >
                                                 Change
@@ -163,11 +183,16 @@ export default function StudentProfile({ studentId, canModify }) {
                                             {studentDetails.email}
                                             <button
                                                 className="btn btn-sm btn-primary edit-btn hidden group-hover:block cursor-pointer text-sm"
-                                                onClick={() =>
-                                                    alert(
-                                                        "Change email feature for student is comming soon!"
-                                                    )
-                                                }
+                                                onClick={() => {
+                                                    setShowModal(true);
+                                                    setShowFeesHistory(false);
+                                                    setShowChangeProfilePicForm(
+                                                        false
+                                                    );
+                                                    setShowChangeEmailForm(
+                                                        true
+                                                    );
+                                                }}
                                             >
                                                 change
                                             </button>
@@ -296,6 +321,7 @@ export default function StudentProfile({ studentId, canModify }) {
                                                 setShowChangeProfilePicForm(
                                                     false
                                                 );
+                                                setShowChangeEmailForm(false);
                                             }}
                                             className="btn btn-link"
                                         >

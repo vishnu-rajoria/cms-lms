@@ -8,6 +8,11 @@ export default function Notification({ userId, ...props }) {
     const [notifications, setNotifications] = useState([]);
     const [currentNotification, setCurrentNotification] = useState({});
     const [currentNotificationIndex, setCurrentNotificationIndex] = useState(0);
+    const notificaionTitles = {
+        PPCR: "Profile Picture Change Requested",
+        PPCRR: "Profile Picture Change Rejected",
+        PPCRA: "Profile Picture Change Approved",
+    };
     console.log("get notification for user " + userId);
 
     function getUserNotification(userId) {
@@ -132,16 +137,17 @@ export default function Notification({ userId, ...props }) {
                         </div>
                     </div>
 
-                    {notifications.length == 0 && (
-                        <div class="text-center p-4 bg-gray-600 rounded-4 ">
-                            No notification to display
-                        </div>
-                    )}
+                    {currentNotification &&
+                        Object.keys(currentNotification).length == 0 && (
+                            <div class="text-center p-4 bg-gray-600 rounded-4 ">
+                                No notification to display
+                            </div>
+                        )}
                     {notifications.length > 0 && (
                         <>
                             <div className="notification-area-body overflow-y-auto grid gap-1">
                                 <div className="grid">
-                                    {/* {JSON.stringify(notifications)} */}
+                                    {/* {JSON.stringify(currentNotification)} */}
 
                                     {currentNotification && (
                                         <>
@@ -156,13 +162,12 @@ export default function Notification({ userId, ...props }) {
                                                 />
                                                 <div className="content">
                                                     <h3 className="font-semibold">
-                                                        {currentNotification.type ==
-                                                        "PPCR"
-                                                            ? "Profile Pic changed "
-                                                            : currentNotification.type ==
-                                                              "PPCRR"
-                                                            ? "Profile pic rejected "
-                                                            : "Not title"}
+                                                        {
+                                                            notificaionTitles[
+                                                                currentNotification
+                                                                    .type
+                                                            ]
+                                                        }
 
                                                         <span className="text-sm font-thin text-gray-400">
                                                             (

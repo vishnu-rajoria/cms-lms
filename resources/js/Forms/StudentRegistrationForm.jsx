@@ -3,7 +3,6 @@ import { getFormFieldsJSX } from "@/Helpers/FormHelper";
 
 export default function StudentRegistrationForm({
     formId,
-    submitHandler,
     clearFormHandler,
     formData,
 }) {

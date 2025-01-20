@@ -125,6 +125,28 @@ export function validateField(validatorRules, value) {
                         );
                     }
                     break;
+                case "maxLength":
+                    if (value.length > parseInt(ruleValue)) {
+                        if (fieldNotRequired && value.length > 0) {
+                            isFieldInvalid = true;
+                            fieldErrors.push(
+                                `should have at max ${ruleValue} characters`
+                            );
+                        }
+                    }
+                    if (notEmpty && value.length > parseInt(ruleValue)) {
+                        isFieldInvalid = true;
+                        fieldErrors.push(
+                            `should have at max ${ruleValue} characters`
+                        );
+                    }
+                    break;
+                case "onlyDigit":
+                    if (!/^\d+$/.test(value)) {
+                        isFieldInvalid = true;
+                        fieldErrors.push(`should have only digits`);
+                    }
+                    break;
                 case "min":
                     if (parseInt(value) < parseInt(ruleValue) || value === "") {
                         isFieldInvalid = true;
