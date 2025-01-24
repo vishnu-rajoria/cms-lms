@@ -10,13 +10,22 @@ import ThemeSwitcher from "@/Components/ThemeSwitcher";
 import Theme from "@/Theme/Theme";
 import Breather from "@/Components/Breather";
 import Notification from "@/Components/Notification";
+import ChangeEmailForm from "@/Forms/ChangeEmailForm";
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
-
+    const [isEmailVerified, setIsEmailVerified] = useState(
+        user.email_verified_at ? true : false
+    );
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-
+    function emailChangeResponseHandler(response) {
+        console.log("Email change verification :");
+        console.log(response);
+        if (response.data.status == "success") {
+            setIsEmailVerified(true);
+        }
+    }
     return (
         <Theme>
             <div className="min-h-screen bg-slate-200 dark:bg-slate-700">
@@ -93,6 +102,15 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Dashboard
                         </NavLink>
+                        {/* <NavLink
+                            href={route("student.resource.material")}
+                            active={route().current(
+                                "student.resource.material"
+                            )}
+                            className="shrink-0"
+                        >
+                            Resource Material
+                        </NavLink> */}
                     </div>
                 </nav>
                 {header && (
@@ -105,7 +123,23 @@ export default function AuthenticatedLayout({ header, children }) {
                 <main>
                     <div className="">
                         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                            {children}
+                            {/* {JSON.stringify(user)} */}
+                            {isEmailVerified && <>{children}</>}
+                            {!isEmailVerified && (
+                                <>
+                                    <h3 className="text-center text-gray-300">
+                                        Your email is not verified. please
+                                        verify if before proceeding
+                                    </h3>
+                                    <ChangeEmailForm
+                                        userId={user.id}
+                                        userRoleId={user.role_id}
+                                        emailChangeResponseHandler={
+                                            emailChangeResponseHandler
+                                        }
+                                    />
+                                </>
+                            )}
                         </div>
                     </div>
                 </main>

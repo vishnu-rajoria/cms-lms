@@ -105,6 +105,10 @@ $about_institute = "CSLAB stands at the forefront of computer science education 
                 {{ $user_details['name'] }}
             </div>
             <div class="detail">
+                <b>Father's Name : </b>
+                {{ $student_details['fname'] }}
+            </div>
+            <div class="detail">
                 <b>Date of Joining : </b>
                 {{ date_format(date_create($student_details['doj']),"d-m-Y")}}
             </div>

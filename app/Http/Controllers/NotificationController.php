@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Notification;
-use App\Models\DBRecordUpdate;
-use App\Models\DBRecordUpdateEntry;
+use App\Models\DbRecordUpdate;
+use App\Models\DbRecordUpdateEntry;
 
 use DB;
 use Auth as Auth;

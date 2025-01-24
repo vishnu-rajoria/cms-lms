@@ -15,7 +15,7 @@ use App\Http\Controllers\EmailController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ImageController;
-
+use App\Http\Controllers\ResourceMaterialController;
 use Inertia\Inertia;
 use Auth as Auth;
 
@@ -41,6 +41,9 @@ Route::get('/', function () {
             'author_name' => "Vishnu Rajoria",
         ]);
     }
+});
+Route::get('/linkstorage', function () {
+    Artisan::call('storage:link');
 });
 
 
@@ -127,6 +130,9 @@ Route::prefix("student")->middleware(['auth', 'verified', 'verify.access.control
     Route::get('/dashboard', [StudentController::class, 'index'])->name('student.dashboard');
     Route::get('/{student_id}/profile', [StudentController::class, 'showProfile'])->name('student.profile');
     Route::get('/{student_id}/fees-history', [StudentController::class, 'showFeeHistory'])->name('student.fees.history');
+
+
+    Route::get('/resource-material', [ResourceMaterialController::class, 'showResourceMaterial'])->name('student.resource.material');
 });
 
 

@@ -225,7 +225,7 @@ export default function UpdatePasswordForm({ className = "" }) {
                             hidden
                         />
                         <div className="flex flex-col items-center">
-                            <div className="px-2 dark:text-gray-400 font-medium text-sm w-[100%] md:w-[50%]">
+                            <div className="px-2 dark:text-gray-400 font-medium text-sm w-[100%]">
                                 {getFormFieldsJSX(
                                     changePasswordFormFieldsData,
                                     {

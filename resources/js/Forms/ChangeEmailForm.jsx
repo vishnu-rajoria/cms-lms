@@ -177,6 +177,7 @@ export default function ChangeEmailForm({
                     // Log the response from the server
                     console.log("Response from server");
                     console.log(response);
+                    emailChangeResponseHandler(response);
                     // responseHandler(response);
                     const toastId = toast.loading("loading data...", {
                         position: "bottom-right",

@@ -44,7 +44,7 @@ export const signaturePicFormFields = {
 
 export const changeEmailFormFields = {
     new_email: {
-        label: "New Email",
+        label: "Email",
         value: "",
         type: "email",
         validatorRules: ["notEmpty", "validEmail"],

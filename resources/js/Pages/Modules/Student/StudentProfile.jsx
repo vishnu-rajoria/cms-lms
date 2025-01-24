@@ -1,11 +1,9 @@
 import StudentActivityTracker from "@/Components/StudentActivityTracker";
-import { getStudentImageURL } from "@/Helpers/ImageHelper";
+import { getStudentImageURL, getGroupIconURL } from "@/Helpers/ImageHelper";
 import { baseURL } from "@/Env";
-import AuthenticatedLayout from "@/Layouts/Admin/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { formatDistance, formatISO, set } from "date-fns";
 import axios from "axios";
 import { formattedMysqlDateAndTime } from "@/Helpers/TimeHelper";
 import TextInput from "@/Components/TextInput";
@@ -13,7 +11,6 @@ import Modal from "@/Components/Modal";
 import StudentFeeHistory from "./StudentFeeHistory";
 import ChangeProfilePicForm from "@/Forms/ChangeProfilePicForm";
 
-import ChangeEmailForm from "@/Forms/ChangeEmailForm";
 export default function StudentProfile({ studentId, canModify }) {
     const [studentDetails, setStudentDetails] = useState({});
     const [groups, setGroups] = useState([]);
@@ -22,12 +19,15 @@ export default function StudentProfile({ studentId, canModify }) {
         useState(false);
     const [showFeesHistory, setShowFeesHistory] = useState(false);
     const [studentFeeHistoryData, setStudentFeeHistoryData] = useState([]);
-    const [showChangeEmailForm, setShowChangeEmailForm] = useState(false);
     function getStudentDetails(studentId) {
         // Display a loading toast message at the bottom-right
         const toastId = toast.loading("loading data...", {
             position: "bottom-right",
         });
+        console.log(
+            "when running the getStudentDetails() function  studentDetails is"
+        );
+        console.log(studentDetails);
         axios
             .get(baseURL + "/api/get-student-details/" + studentId)
             .then(function (response) {
@@ -70,6 +70,7 @@ export default function StudentProfile({ studentId, canModify }) {
         getStudentFeeHistory(studentId);
     }
     useEffect(() => {
+        console.log("use effect running");
         getStudentDetails(studentId);
     }, []);
 
@@ -93,15 +94,6 @@ export default function StudentProfile({ studentId, canModify }) {
         <>
             <Modal show={showModal} onClose={() => setShowModal(false)}>
                 <div className="p-6">
-                    {showChangeEmailForm && (
-                        <ChangeEmailForm
-                            userId={studentDetails.id}
-                            userRoleId={studentDetails.role_id}
-                            emailChangeResponseHandler={
-                                emailChangeResponseHandler
-                            }
-                        />
-                    )}
                     {showChangeProfilePicForm && (
                         <ChangeProfilePicForm
                             userId={studentDetails.id}
@@ -181,21 +173,6 @@ export default function StudentProfile({ studentId, canModify }) {
                                         </h2>
                                         <h3 className="group flex justify-start gap-2">
                                             {studentDetails.email}
-                                            <button
-                                                className="btn btn-sm btn-primary edit-btn hidden group-hover:block cursor-pointer text-sm"
-                                                onClick={() => {
-                                                    setShowModal(true);
-                                                    setShowFeesHistory(false);
-                                                    setShowChangeProfilePicForm(
-                                                        false
-                                                    );
-                                                    setShowChangeEmailForm(
-                                                        true
-                                                    );
-                                                }}
-                                            >
-                                                change
-                                            </button>
                                         </h3>
                                         <div
                                             className="flex justify-start gap-2 items-center"
@@ -338,7 +315,15 @@ export default function StudentProfile({ studentId, canModify }) {
                                                 index
                                             }
                                         >
-                                            <h3 className="text-xl font-bold text-gray-900 dark:text-green-300 pt-6">
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-green-300 pt-6 flex items-center">
+                                                <img
+                                                    className="w-[50px] rounded-full p-2"
+                                                    src={getGroupIconURL(
+                                                        group.id,
+                                                        group.group_icon
+                                                    )}
+                                                    alt=""
+                                                />
                                                 {group.name}
                                             </h3>
                                             <StudentActivityTracker

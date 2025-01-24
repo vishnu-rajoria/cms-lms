@@ -115,7 +115,7 @@ export default function ChangePasswordForm({
                 </div>
             )}
             {!isPasswordChanged && (
-                <div class="py-6 text-gray-200 grid gap-2">
+                <div class="text-gray-200 grid gap-2">
                     Set new password
                     <form
                         id="profile-pic-selection-form"

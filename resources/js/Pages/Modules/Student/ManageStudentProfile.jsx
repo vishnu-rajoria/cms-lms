@@ -2,6 +2,7 @@ import { baseURL } from "@/Env";
 import AuthenticatedLayout from "@/Layouts/Admin/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import StudentProfile from "./StudentProfile";
+import { usePage } from "@inertiajs/react";
 /**
  * The admin dashboard
  *
@@ -12,10 +13,12 @@ import StudentProfile from "./StudentProfile";
  * @returns {React.ReactElement} The admin dashboard component
  */
 export default function ManageStudentProfile({ studentId }) {
+    const userInfo = usePage().props.auth.user;
     return (
         <AuthenticatedLayout header={""}>
             <Head title="Dashboard" />
             <div class="p-2"></div>
+
             <StudentProfile studentId={studentId} canModify={true} />
         </AuthenticatedLayout>
     );

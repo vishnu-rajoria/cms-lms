@@ -18,7 +18,7 @@ export default function ActivityBox({
             : attendanceInfo.is_leave_uninformed
             ? "bg-red-600 text-red-200"
             : "bg-orange-400 text-black";
-        console.log(attendanceInfo);
+        // console.log(attendanceInfo);
     }
     return (
         <div
