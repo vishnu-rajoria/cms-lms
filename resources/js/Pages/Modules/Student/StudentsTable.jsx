@@ -63,6 +63,13 @@ export default function StudentsTable({ groupId }) {
         }
     }
 
+/**
+ * getGroupList() function
+ * Fetches the list of groups from the server and updates the groupList state.
+ * If the groupList is already populated, the function returns early to avoid
+ * redundant network requests. Logs the server response or error for debugging.
+ */
+
     function getGroupList() {
         if (groupList.length > 0) return;
         axios

@@ -19,7 +19,7 @@ export default function DropdownInput({ ...props }) {
         <>
             <select
                 className={
-                    "rounded-md border-gray-300 dark:border-none shadow-sm focus:border-indigo-500 focus:ring-indigo-500 w-full dark:bg-gray-900 " +
+                    "rounded-md border-gray-300 dark:border-none shadow-sm focus:border-indigo-500 focus:ring-indigo-500 w-full dark:bg-gray-900 p-2 mt-1 " +
                     props.className
                 }
                 {...props}

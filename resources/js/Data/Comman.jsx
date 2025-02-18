@@ -1,3 +1,23 @@
+export const fileUploadFormFields = {
+    "file_uploaded[]": {
+        value: [
+            // {
+            //     preview:
+            //         "http://localhost/cslab-app/cms/public/storage/students/27/profile_pictures/uFCUflqD9YzpBiSO4WSyDzr8JxWkRFFlT0gssf92.jpg",
+            // },
+        ],
+        type: "file",
+        maxNumberOfFiles: 1,
+        previewElementStyle:
+            "flex flex-wrap border border-dashed gap-2 p-2 w-full top-0 left-0 min-h-[100px]",
+        fieldValidationStatus: {
+            isInvalid: false,
+            message: "",
+        },
+        label: `Select file/s to upload`,
+    },
+};
+
 export const profilePicFormFields = {
     "profile_pic[]": {
         value: [

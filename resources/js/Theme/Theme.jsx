@@ -64,7 +64,7 @@ export default function Theme({ children }) {
                 to the components inside it
             */}
             <ThemeContext.Provider value={{ themeMode, toggleThemeHandler }}>
-                <div id="app-theme" data-mode={themeMode}>
+                <div id="app-theme" className={themeMode}>
                     {children}
                 </div>
             </ThemeContext.Provider>

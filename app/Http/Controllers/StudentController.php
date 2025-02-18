@@ -200,6 +200,39 @@ class StudentController extends Controller
         return response()->json(["studentAttendance" => $studentAttendanceFormatted]);
     }
 
+    function getMonthlyRegistrationReport(Request $request)
+    {
+        $year = (int)date('Y');
+        $month = ((int)date('m'));
+        $studentRegistrationMonthlyData = array();
+        for ($i = 0; $i < 12; $i++) {
+            // echo "Year $year and MONTH : #$month <br>";
+
+
+
+            if ($month == 0) {
+                $month = 12;
+                $year = $year - 1;
+            }
+            if ($month < 10) {
+                $month = "0" . $month;
+            }
+            // echo $year . "-" . $month . "<br>";
+            $startingDate = $year . "-" . $month . "-01";
+            $endDate = $year . "-" . $month . "-31";
+
+            // echo "<b>********getting registration count between : $startingDate:$endDate</b><br><br>";
+            $studentsRegisteredCount = Student::whereBetween('doj', [$startingDate, $endDate])->count();
+            $studentRegistrationMonthlyData[$month . "-" . $year] = $studentsRegisteredCount;
+            $month--;
+        }
+
+
+        // print_r($studentRegistrationMonthlyData);
+
+        return response()->json(["studentRegistrationmonthlyData" => $studentRegistrationMonthlyData]);
+    }
+
     public function getStudents($groupId = null)
     {
         // return response()->json(["students"=>User::where(['role_id' => 3])->get()]);

@@ -102,7 +102,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Dashboard
                         </NavLink>
-                        {/* <NavLink
+                        <NavLink
                             href={route("student.resource.material")}
                             active={route().current(
                                 "student.resource.material"
@@ -110,7 +110,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             className="shrink-0"
                         >
                             Resource Material
-                        </NavLink> */}
+                        </NavLink>
                     </div>
                 </nav>
                 {header && (

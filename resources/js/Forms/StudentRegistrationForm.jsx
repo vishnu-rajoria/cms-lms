@@ -5,6 +5,7 @@ export default function StudentRegistrationForm({
     formId,
     clearFormHandler,
     formData,
+    submitHandler,
 }) {
     // console.log("inside student registration form form data is :");
     // console.log(formData);

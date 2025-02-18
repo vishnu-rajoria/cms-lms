@@ -126,6 +126,14 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Manage Groups
                         </NavLink>
+
+                        <NavLink
+                            href={route("manage.resource.material")}
+                            active={route().current("manage.resource.material")}
+                            className="shrink-0"
+                        >
+                            Resource Material
+                        </NavLink>
                     </div>
                 </nav>
                 {header && (

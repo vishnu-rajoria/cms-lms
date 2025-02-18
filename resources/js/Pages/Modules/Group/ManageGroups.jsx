@@ -151,14 +151,11 @@ export default function ManageGroups() {
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-4 flex-wrap justify-between">
                     <h2>Groups </h2>
 
-                    <Link
-                        className="btn"
-                        href={baseURL + "/admin/register-Group"}
-                    >
-                        Register Group
+                    <Link className="btn" href={baseURL + "/group-module-help"}>
+                        Help
                     </Link>
                 </div>
             }

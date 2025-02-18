@@ -61,3 +61,25 @@ export function getDayName(dateString) {
 
     return dayName;
 }
+
+export function getMonthNameFromNumber(monthNumber) {
+    // Convert the number to a human-readable day name
+    console.log("month number passed as  : " + monthNumber);
+    const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+    const monthName = months[monthNumber - 1];
+
+    return monthName;
+}

@@ -90,10 +90,10 @@ export default function Notification({ userId, ...props }) {
     }, []);
     return (
         <>
-            <div className="relative w-[30px] h-[30px] mt-4 cursor-pointer">
+            <div className="relative w-[30px] h-[30px] mt-4 cursor-pointer dark:invert ">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    fill="#fff"
+                    fill="#000"
                     width="30px"
                     onClick={() => toggleNotificationSidebar()}
                 >

@@ -14,7 +14,11 @@ export default function IconGroup({
             postfix = total - imagesURL.length;
         }
     } else {
-        postfix = imagesURL.length - max;
+        if (imagesURL) {
+            postfix = imagesURL.length - max;
+        } else {
+            postfix = "";
+        }
     }
 
     let sizeClasses = "w-[40px] h-[40px]";
@@ -32,27 +36,28 @@ export default function IconGroup({
     }
     return (
         <div className={"flex items-center gap-1 " + className}>
-            {imagesURL.map((imageURL, index) => {
-                if (max > index) {
-                    return (
-                        <div
-                            key={"image-icon-" + index}
-                            className={
-                                index == 0
-                                    ? sizeClasses +
-                                      " border-2 rounded-full overflow-hidden"
-                                    : sizeClasses +
-                                      " border-2 rounded-full overflow-hidden ml-[-10px]"
-                            }
-                        >
-                            <img
-                                className={sizeClasses + " object-cover "}
-                                src={imageURL}
-                            ></img>
-                        </div>
-                    );
-                }
-            })}
+            {imagesURL &&
+                imagesURL.map((imageURL, index) => {
+                    if (max > index) {
+                        return (
+                            <div
+                                key={"image-icon-" + index}
+                                className={
+                                    index == 0
+                                        ? sizeClasses +
+                                          " border-2 rounded-full overflow-hidden"
+                                        : sizeClasses +
+                                          " border-2 rounded-full overflow-hidden ml-[-10px]"
+                                }
+                            >
+                                <img
+                                    className={sizeClasses + " object-cover "}
+                                    src={imageURL}
+                                ></img>
+                            </div>
+                        );
+                    }
+                })}
 
             <div className="text-gray-500 dark:text-gray-200">
                 {postfix > 0 ? `+${postfix}` : ""}

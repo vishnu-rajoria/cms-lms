@@ -47,6 +47,7 @@ Route::get('/linkstorage', function () {
 });
 
 
+
 Route::post("view-image", [ImageController::class, "viewImage"])->name("view.image");
 Route::get("test-email", [EmailController::class, "testEmail"])->name("test.email");
 
@@ -64,6 +65,11 @@ Route::prefix("admin")->middleware(['auth', 'verified', 'verify.access.control']
     Route::get('/register-student', [StudentController::class, 'register'])->name('admin.register.student');
 });
 
+Route::middleware(['auth', 'verified', 'verify.access.control'])->group(function () {
+    Route::get('/resource-material', [ResourceMaterialController::class, 'manageResourceMaterial'])->name('manage.resource.material');
+    Route::get('/resource-material/add-new', [ResourceMaterialController::class, 'resourceMaterialFrom'])->name('resource.material.from');
+    Route::post('/save-resource-material', [ResourceMaterialController::class, 'saveResourceMaterial'])->name('save.resource.material');
+});
 Route::prefix("group")->middleware(['auth', 'verified', 'verify.access.control'])->group(function () {
     Route::get('/{group_id}', [GroupController::class, 'viewGroupInfo'])->name('view.group.info');
 
@@ -121,6 +127,8 @@ Route::prefix("api")->middleware(['auth', 'verified', 'verify.access.control'])-
 
 
     Route::post('/update-profile-pic', [StudentController::class, 'updateProfilePic'])->name('api.update.profile.pic');
+
+    Route::post('/getMonthlyStudentRegistration', [StudentController::class, "getMonthlyRegistrationReport"])->name("get.monthly.registration.report");
 });
 
 Route::get('api/generate-qr-code', [QRCodeController::class, 'geneateQrCode'])->name('generate.qr.code');

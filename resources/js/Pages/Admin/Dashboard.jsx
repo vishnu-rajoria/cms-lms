@@ -1,7 +1,10 @@
 import AuthenticatedLayout from "@/Layouts/Admin/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { VictoryChart, VictoryLine, VictoryTheme } from "victory";
+import { useState, useEffect } from "react";
+import { getMonthNameFromNumber } from "@/Helpers/TimeHelper";
+import BarChartCSLAB from "@/Components/Charts/BarChartCSLAB";
 
+import axios from "axios";
 /**
  * The admin dashboard
  *
@@ -16,56 +19,64 @@ export default function Dashboard({}) {
      * The series data for Canada
      * @type {{name: string, data: Array<number>}}
      */
-    const series = [
-        {
-            name: "Canada",
-            data: [
-                3.9670002, 5.2650003, 6.201, 7.8010006, 9.694, 11.214001,
-                11.973001, 12.250001, 12.816001, 13.413001, 13.626961, 14.30356,
-                15.295461,
-            ],
-        },
-        {
-            name: "India",
-            data: [
-                1.9670002, 9.2650003, 3.201, 8.8010006, 11.694, 5.214001,
-                5.973001, 10.250001, 12.816001, 15.413001, 18.626961, 10.30356,
-                8.295461,
-            ],
-        },
-    ];
 
+    const [
+        studentRegistrationMonthlyCountSeries,
+        setStudentRegistrationMonthlyCountSeries,
+    ] = useState([]);
+    const [
+        studentRegistrationMonthlyXAxisLabelsData,
+        setStudentRegistrationMonthlyXAxisLabelsData,
+    ] = useState([]);
+
+    function loadStudentMonthlyRegistrationData() {
+        let getStudentMonthlyRegistrationDataURL = route(
+            "get.monthly.registration.report"
+        );
+        axios
+            .post(getStudentMonthlyRegistrationDataURL)
+            .then((response) => {
+                console.log(
+                    "before setting response.data.studentRegistrationmonthlyData"
+                );
+                console.log(response.data.studentRegistrationmonthlyData);
+
+                let data = response.data.studentRegistrationmonthlyData;
+                let series = Object.keys(data)
+                    .reverse()
+                    .map((key) => {
+                        return data[key];
+                    });
+                setStudentRegistrationMonthlyCountSeries(series);
+                let xAxisData = Object.keys(data)
+                    .reverse()
+                    .map((key) => {
+                        let monthAndYearArray = key.split("-");
+                        let month = parseInt(monthAndYearArray[0]);
+                        let year = monthAndYearArray[1];
+                        return getMonthNameFromNumber(month) + " " + year;
+                    });
+                setStudentRegistrationMonthlyXAxisLabelsData(xAxisData);
+            })
+            .catch((error) => {});
+    }
+
+    useEffect(() => {
+        loadStudentMonthlyRegistrationData();
+    }, []);
     return (
         <AuthenticatedLayout header={<h2>Dashboard</h2>}>
             <Head title="Dashboard" />
 
             <div className="overflow-hidden shadow-sm sm:rounded-lg">
-                <div className="p-6 text-gray-900 dark:text-white">
-                    <div className="w-[400px]">
-                        <VictoryChart
-                            theme={VictoryTheme.clean}
-                            animate={{ duration: 500 }}
-                        >
-                            <VictoryLine
-                                data={series[0].data.map((d, i) => ({
-                                    x: i + 2010,
-                                    y: d,
-                                }))}
-                                style={{
-                                    data: {
-                                        stroke: "orange",
-                                    },
-                                }}
-                            />
-
-                            <VictoryLine
-                                data={series[1].data.map((d, i) => ({
-                                    x: i + 2010,
-                                    y: d,
-                                }))}
-                            />
-                        </VictoryChart>
-                    </div>
+                <div className="p-6 text-gray-900 dark:text-white bg-[rgb(16,12,42)]">
+                    <BarChartCSLAB
+                        theme="dark"
+                        series={studentRegistrationMonthlyCountSeries}
+                        xAxisLabelsData={
+                            studentRegistrationMonthlyXAxisLabelsData
+                        }
+                    />
                 </div>
             </div>
         </AuthenticatedLayout>
